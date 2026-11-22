@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSMOS – Virtual Space Explorer</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Starfield background -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Mobile Top Header Bar (< 1024px) -->
+  <header class="cosmos-mobile-header">
+    <div class="mobile-logo-wrap">
+      <span class="mobile-logo-icon">🪐</span>
+      <span class="logo">COSMOS</span>
+    </div>
+    <button class="mobile-hamburger" id="hamburger" aria-label="Open Navigation Menu">☰</button>
+  </header>
+
+  <!-- Sidebar Overlay for mobile drawer -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Dynamic Ambient Nebula & Particle VFX Layers -->
+  <div id="cosmic-nebula-ambient" class="cosmic-nebula-ambient" aria-hidden="true"></div>
+  <canvas id="cosmic-cursor-canvas" class="cosmic-cursor-canvas" aria-hidden="true" style="display: none !important; pointer-events: none !important;"></canvas>
+  <canvas id="cosmic-warp-canvas" class="cosmic-warp-canvas" aria-hidden="true" style="display: none !important; pointer-events: none !important;"></canvas>
+
+  <!-- Left-side Navigation Sidebar -->
+  <aside class="cosmos-sidebar" id="cosmos-sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-brand">
+        <div class="brand-row">
+          <div class="cosmos-chakra-logo-wrap">
+            <svg class="cosmos-chakra-svg" viewBox="0 0 100 100" width="36" height="36" aria-hidden="true">
+              <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(223, 177, 91, 0.45)" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="rgba(56, 189, 248, 0.65)" stroke-width="1.5"/>
+              <circle cx="50" cy="50" r="26" fill="none" stroke="rgba(223, 177, 91, 0.75)" stroke-width="1"/>
+              <circle cx="50" cy="50" r="8" fill="url(#chakraCenterGrad)"/>
+              <g stroke="rgba(223, 177, 91, 0.8)" stroke-width="1.5">
+                <line x1="50" y1="12" x2="50" y2="26"/>
+                <line x1="50" y1="74" x2="50" y2="88"/>
+                <line x1="12" y1="50" x2="26" y2="50"/>
+                <line x1="74" y1="50" x2="88" y2="50"/>
+                <line x1="23" y1="23" x2="33" y2="33"/>
+                <line x1="67" y1="67" x2="77" y2="77"/>
+                <line x1="23" y1="77" x2="33" y2="67"/>
+                <line x1="67" y1="33" x2="77" y2="23"/>
+              </g>
+              <defs>
+                <radialGradient id="chakraCenterGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffd700"/>
+                  <stop offset="100%" stop-color="#38bdf8"/>
+                </radialGradient>
+              </defs>
+            </svg>
+            <span class="brand-icon">🪐</span>
+          </div>
+          <span class="logo cosmos-divine-logo">COSMOS</span>
+        </div>
+        <p class="brand-tagline">VIRTUAL SPACE EXPLORER</p>
+        <div class="brand-subtext-divine">॥ अनन्त ब्रह्माण्ड ॥ THE INFINITE PRESERVER</div>
+      </div>
+      <button class="sidebar-close-btn" id="sidebar-close" aria-label="Close Navigation Menu">&times;</button>
+    </div>
+
+    <!-- Navigation Menu Items -->
+    <nav class="sidebar-nav" id="navLinks">
+      <a href="#explore" class="sidebar-nav-item active" data-view="view-explore">
+        <span class="nav-icon">🔭</span>
+        <span class="nav-text">Explore</span>
+        <span class="nav-badge" style="background: linear-gradient(90deg, #38bdf8, #818cf8);">DISCOVERY</span>
+      </a>
+      <a href="#builder" class="sidebar-nav-item" data-view="view-builder">
+        <span class="nav-icon">🛠️</span>
+        <span class="nav-text">Solar System Lab</span>
+        <span class="nav-badge" style="background: linear-gradient(90deg, #00ffcc, #4fc3f7);">3D LAB</span>
+      </a>
+      <a href="#sim-lab" class="sidebar-nav-item sim-lab-nav-item" data-view="view-sim-lab">
+        <span class="nav-icon">⚛️</span>
+        <span class="nav-text">Cosmic Simulation Lab</span>
+        <span class="nav-badge" style="background: linear-gradient(90deg, #ec4899, #8b5cf6);">PHYSICS</span>
+      </a>
+      <a href="#mission-control" class="sidebar-nav-item" data-view="view-mission-control">
+        <span class="nav-icon">🛸</span>
+        <span class="nav-text">Planet Mission Control</span>
+        <span class="nav-badge" style="background: linear-gradient(90deg, #f59e0b, #ef4444);">SIMULATOR</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer / System Badge & Audio Toggle -->
+    <div class="sidebar-footer">
+      <div class="audio-control-wrap">
+        <button id="cosmos-sound-toggle" class="cosmos-sound-btn" aria-label="Toggle Sci-Fi SFX Audio">
+          <span class="sound-icon" id="sound-icon">🔊</span>
+          <span class="sound-text" id="sound-text">SFX: ON</span>
+        </button>
+      </div>
+      <div class="system-status">
+        <span class="status-pulse-dot"></span>
+        <span class="system-status-text">COSMOS v4.5 // ONLINE</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Main Application Content Area (SPA Views) -->
+  <main class="cosmos-main-content" id="cosmos-main-content">
+
+    <!-- VIEW 2: EXPLORE (Space Facts, Time Travel, Planet Info Explorer, Space Quiz) -->
+        <!-- VIEW 2: EXPLORE (Long-Form Cosmic Discovery Interface) -->
+    <div id="view-explore" class="cosmos-view active-view" style="display: block;">
+
+      <!-- Explore Hub Top Banner -->
+      <header class="explore-hub-header">
+        <div class="explore-badge-pill">🔭 COSMOS DISCOVERY HUB</div>
+        <h1>EXPLORE THE COSMOS</h1>
+        <p class="explore-subtitle">
+          Voyage through planetary systems, interactive 3D holographic worlds, historic space missions, satellite constellations, and the pioneers of space exploration.
+        </p>
+
+        <!-- Quick Module Switcher Navigation -->
+        <nav class="explore-module-nav" id="explore-module-nav">
+          <div class="explore-nav-group core-group">
+            <span class="explore-nav-group-title">CORE WORLDS:</span>
+            <a href="#explore-planets" class="explore-mod-pill active" data-scroll="explore-planets">🪐 Planetary Worlds</a>
+            <a href="#dashavatara-explorer" class="explore-mod-pill" data-scroll="dashavatara-explorer">🌌 Cosmic Epochs</a>
+            <a href="#explore-quiz" class="explore-mod-pill" data-scroll="explore-quiz">🧠 Cosmic Quiz</a>
+          </div>
+          <div class="explore-nav-divider"></div>
+          <div class="explore-nav-group sec-group">
+            <span class="explore-nav-group-title">RESEARCH ARCHIVES:</span>
+            <button class="explore-mod-pill sec-pill" data-explore-module="missions">🚀 Space Missions</button>
+            <button class="explore-mod-pill sec-pill" data-explore-module="isro">🛰️ ISRO Explorer</button>
+            <button class="explore-mod-pill sec-pill" data-explore-module="drdo">🛡️ DRDO Aerospace</button>
+            <button class="explore-mod-pill sec-pill" data-explore-module="satellites">📡 Satellites</button>
+            <button class="explore-mod-pill sec-pill" data-explore-module="centers">🏛️ Space Centers</button>
+            <button class="explore-mod-pill sec-pill" data-explore-module="scientists">👨‍🔬 Eminent Scientists</button>
+            <button class="explore-mod-pill sec-pill" data-explore-module="timeline">⏱️ Tech Timeline</button>
+          </div>
+        </nav>
+      </header>
+
+      <!-- SECTION 1: PLANETARY EXPLORATION (3D HOLOGRAPHIC CARDS) -->
+      <section id="explore-planets" class="explore-module-section">
+        <div class="module-header-block">
+          <div class="module-tag-pill">॥ सौरमण्डल ग्रह मण्डल ॥ ASTRONOMICAL WORLDS</div>
+          <h2 class="section-title">Planetary Exploration</h2>
+          <p class="module-desc">
+            Interact with physically detailed 3D holographic celestial displays. Move your pointer over each holographic card to inspect depth parallax, dynamic reflection highlights, and physical planetary characteristics.
+          </p>
+        </div>
+
+        <div class="holo-planets-grid" id="holo-planets-grid">
+
+          <!-- Sun Card -->
+          <div class="holo-planet-card" data-planet="sun" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">SOL 0.00 AU • G2V</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb sun-visual sun-orb">
+                  
+                  <div class="holo-atmo-glow sun-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Sun <span class="sanskrit-title">सूर्य</span></h3>
+                  <span class="holo-type-tag">YELLOW DWARF STAR</span>
+                </div>
+                <p class="holo-planet-summary">The powerhouse of our solar system, containing 99.86% of all system mass in continuous nuclear fusion.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">RADIUS</span>
+                  <span class="stat-val">696,340 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">SURFACE G</span>
+                  <span class="stat-val">274 m/s²</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">CORE TEMP</span>
+                  <span class="stat-val">15,000,000°C</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">SPECTRAL</span>
+                  <span class="stat-val">G2V</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="sun">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Mercury Card -->
+          <div class="holo-planet-card" data-planet="mercury" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">0.39 AU • NO MOONS</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb mercury-visual mercury-orb">
+                  
+                  <div class="holo-atmo-glow mercury-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Mercury <span class="sanskrit-title">बुध</span></h3>
+                  <span class="holo-type-tag">TERRESTRIAL PLANET</span>
+                </div>
+                <p class="holo-planet-summary">The innermost planet, orbiting closest to the Sun with extreme temperature swings and a cratered surface.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">4,879 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">88 Days</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">TEMP RANGE</span>
+                  <span class="stat-val">-180° to 430°C</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">SPEED</span>
+                  <span class="stat-val">47.4 km/s</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="mercury">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Venus Card -->
+          <div class="holo-planet-card" data-planet="venus" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">0.72 AU • RETROGRADE</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb venus-visual venus-orb">
+                  
+                  <div class="holo-atmo-glow venus-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Venus <span class="sanskrit-title">शुक्र</span></h3>
+                  <span class="holo-type-tag">TERRESTRIAL PLANET</span>
+                </div>
+                <p class="holo-planet-summary">Earth's volcanic sister wrapped in crushing sulfuric acid clouds with a runaway greenhouse climate.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">12,104 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">SURFACE P</span>
+                  <span class="stat-val">92 atm</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">SURFACE TEMP</span>
+                  <span class="stat-val">465°C</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ROTATION</span>
+                  <span class="stat-val">243 Days</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="venus">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Earth Card -->
+          <div class="holo-planet-card" data-planet="earth" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">1.00 AU • 1 MOON</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb earth-visual earth-orb">
+                  
+                  <div class="holo-atmo-glow earth-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Earth <span class="sanskrit-title">पृथ्वी</span></h3>
+                  <span class="holo-type-tag">HABITABLE WORLD</span>
+                </div>
+                <p class="holo-planet-summary">The blue oasis of life, boasting vast liquid oceans, dynamic plate tectonics, and a protective magnetosphere.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">12,742 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">GRAVITY</span>
+                  <span class="stat-val">9.81 m/s²</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">365.25 Days</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ATMOSPHERE</span>
+                  <span class="stat-val">N₂ 78% • O₂ 21%</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="earth">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Moon Card -->
+          <div class="holo-planet-card" data-planet="moon" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">384,400 KM FROM EARTH</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb moon-visual moon-orb">
+                  
+                  <div class="holo-atmo-glow moon-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Moon <span class="sanskrit-title">चन्द्र</span></h3>
+                  <span class="holo-type-tag">NATURAL SATELLITE</span>
+                </div>
+                <p class="holo-planet-summary">Earth's celestial companion, tidally locked and keeper of ancient lunar impact basins and icy polar craters.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">3,474 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">GRAVITY</span>
+                  <span class="stat-val">1.62 m/s²</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">27.3 Days</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">POLAR ICE</span>
+                  <span class="stat-val">Confirmed</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="moon">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Mars Card -->
+          <div class="holo-planet-card" data-planet="mars" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">1.52 AU • 2 MOONS</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb mars-visual mars-orb">
+                  
+                  <div class="holo-atmo-glow mars-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Mars <span class="sanskrit-title">मंगल</span></h3>
+                  <span class="holo-type-tag">TERRESTRIAL PLANET</span>
+                </div>
+                <p class="holo-planet-summary">The iron-rich red world, home to the colossal Olympus Mons volcano and subterranean water-ice deposits.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">6,779 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">GRAVITY</span>
+                  <span class="stat-val">3.72 m/s²</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">687 Days</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DAY LENGTH</span>
+                  <span class="stat-val">24h 37m</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="mars">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Jupiter Card -->
+          <div class="holo-planet-card" data-planet="jupiter" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">5.20 AU • 95 MOONS</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb jupiter-visual jupiter-orb">
+                  
+                  <div class="holo-atmo-glow jupiter-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Jupiter <span class="sanskrit-title">बृहस्पति</span></h3>
+                  <span class="holo-type-tag">GAS GIANT</span>
+                </div>
+                <p class="holo-planet-summary">The king of worlds, a vast stormy giant featuring the Great Red Spot and 95 orbiting moons.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">139,820 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">MASS</span>
+                  <span class="stat-val">317.8 Earths</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">11.86 Years</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ROTATION</span>
+                  <span class="stat-val">9h 55m</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="jupiter">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Saturn Card -->
+          <div class="holo-planet-card" data-planet="saturn" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">9.58 AU • 146 MOONS</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb saturn-visual saturn-orb">
+                  <div class="holo-saturn-rings saturn-ring-system"></div>
+                  <div class="holo-atmo-glow saturn-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Saturn <span class="sanskrit-title">शनि</span></h3>
+                  <span class="holo-type-tag">RINGED GAS GIANT</span>
+                </div>
+                <p class="holo-planet-summary">The jewel of the solar system, surrounded by spectacular icy rings and hydrocarbon-rich Titan.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">116,460 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">RING SPAN</span>
+                  <span class="stat-val">282,000 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">29.45 Years</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DENSITY</span>
+                  <span class="stat-val">0.687 g/cm³</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="saturn">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Uranus Card -->
+          <div class="holo-planet-card" data-planet="uranus" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">19.2 AU • 28 MOONS</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb uranus-visual uranus-orb">
+                  
+                  <div class="holo-atmo-glow uranus-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Uranus <span class="sanskrit-title">अरुण</span></h3>
+                  <span class="holo-type-tag">ICE GIANT</span>
+                </div>
+                <p class="holo-planet-summary">A cyan ice giant rolling on its side with a dramatic 97.8° tilt, surrounded by a faint ring system.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">50,724 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">AXIAL TILT</span>
+                  <span class="stat-val">97.8°</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">84.0 Years</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">MIN TEMP</span>
+                  <span class="stat-val">-224°C</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="uranus">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+
+          <!-- Neptune Card -->
+          <div class="holo-planet-card" data-planet="neptune" data-tilt="true">
+            <div class="holo-card-glass">
+              <div class="holo-reflection-sheen"></div>
+              <div class="holo-depth-reticle">
+                <span class="reticle-coord">30.1 AU • 16 MOONS</span>
+                <div class="reticle-ring"></div>
+              </div>
+              <div class="holo-planet-stage">
+                <div class="holo-planet-orb neptune-visual neptune-orb">
+                  
+                  <div class="holo-atmo-glow neptune-glow"></div>
+                </div>
+              </div>
+              <div class="holo-card-info">
+                <div class="holo-planet-header">
+                  <h3 class="holo-planet-name">Neptune <span class="sanskrit-title">वरुण</span></h3>
+                  <span class="holo-type-tag">ICE GIANT</span>
+                </div>
+                <p class="holo-planet-summary">The deep blue tempest world at the frontier of the solar system, driven by supersonic supersonic winds.</p>
+                <div class="holo-stats-grid">
+                  
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">DIAMETER</span>
+                  <span class="stat-val">49,244 km</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">WIND SPEED</span>
+                  <span class="stat-val">2,100 km/h</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">ORBIT</span>
+                  <span class="stat-val">164.8 Years</span>
+                </div>
+                <div class="holo-stat-item">
+                  <span class="stat-lbl">MOONS</span>
+                  <span class="stat-val">16 (Triton)</span>
+                </div>
+                </div>
+                <div class="holo-card-footer">
+                  <button class="learn-btn holo-learn-btn" data-planet="neptune">
+                    <span>Deep Analysis</span>
+                    <span class="holo-btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holo-glare-edge"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SPECIALIZED EXPLORATION ARCHIVES (Collapsible Accordion / Document Flow) -->
+      <section class="explore-secondary-wrapper" id="explore-secondary-wrapper">
+        <div class="secondary-modules-hub-bar">
+          <div class="secondary-hub-label">
+            <span class="hub-icon">📚</span>
+            <div>
+              <h3>Specialized Space Archives &amp; Research</h3>
+              <p>Select any module below to open detailed mission archives, spacecraft telemetry, and historical milestones.</p>
+            </div>
+          </div>
+          <div class="secondary-modules-tabs" id="secondary-modules-tabs">
+            <button class="sec-module-btn" data-explore-module="missions"><span>🚀</span> Space Missions</button>
+            <button class="sec-module-btn" data-explore-module="isro"><span>🛰️</span> ISRO Explorer</button>
+            <button class="sec-module-btn" data-explore-module="drdo"><span>🛡️</span> DRDO Aerospace</button>
+            <button class="sec-module-btn" data-explore-module="satellites"><span>📡</span> Satellites</button>
+            <button class="sec-module-btn" data-explore-module="centers"><span>🏛️</span> Space Centers</button>
+            <button class="sec-module-btn" data-explore-module="scientists"><span>👨‍🔬</span> Eminent Scientists</button>
+            <button class="sec-module-btn" data-explore-module="timeline"><span>⏱️</span> Tech Timeline</button>
+          </div>
+        </div>
+
+        <div class="explore-collapsible-container" id="explore-collapsible-container">
+<!-- SECTION 2: GLOBAL & INDIAN SPACE MISSIONS -->
+      <section id="explore-space-missions" class="explore-module-section explore-collapsible-module" data-explore-module="missions">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // GLOBAL SPACE MISSIONS EXPLORER</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill">🛰️ HUMAN &amp; ROBOTIC SPACE FLIGHT</div>
+          <h2 class="section-title">Global Space Missions Explorer</h2>
+          <p class="module-desc">
+            Explore humanity's greatest scientific voyages into outer space — from early orbital pioneers to deep-space observatories and lunar south pole landings.
+          </p>
+        </div>
+
+        <!-- Space Missions Grid (Populated dynamically by script.js) -->
+        <div id="missions-grid" class="missions-module-grid"></div>
+      </section>
+
+      <!-- SECTION 3: ISRO EXPLORER -->
+      <section id="explore-isro" class="explore-module-section explore-collapsible-module" data-explore-module="isro">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // ISRO EXPLORER</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill indian-pill">🚀 INDIAN SPACE RESEARCH ORGANISATION</div>
+          <h2 class="section-title">ISRO Explorer</h2>
+          <p class="module-desc">
+            India's landmark scientific expeditions across the Moon, Mars, the Sun, and human spaceflight.
+          </p>
+        </div>
+        
+        <!-- HARSH UNIQUE 3D HOLOGRAPHIC CRAFT VIEWER -->
+      <div class="harsh-craft-showcase-box" id="harsh-craft-viewer">
+        <div class="craft-showcase-header">
+          <div class="craft-title-wrap">
+            <span class="craft-tag-badge">3D HOLOGRAPHIC CRAFT</span>
+            <h3 id="craft-active-title">Chandrayaan-3 Lunar Lander</h3>
+          </div>
+          <div class="craft-action-btns">
+            <button class="craft-btn craft-type-btn active" data-craft="chandrayaan3">🌕 Chandrayaan-3</button>
+            <button class="craft-btn craft-type-btn" data-craft="aditya">☀️ Aditya-L1</button>
+            <button class="craft-btn craft-type-btn" data-craft="gaganyaan">🧑‍🚀 Gaganyaan</button>
+            <button class="craft-btn" id="craft-deploy-btn">🛰️ Retract Panels</button>
+            <button class="craft-btn" id="craft-thrust-btn">🔥 Fire Thrusters</button>
+          </div>
+        </div>
+        <div class="craft-viewport-wrap" id="harsh-craft-canvas-wrap">
+          <canvas id="harsh-craft-canvas"></canvas>
+          <div class="craft-telemetry-overlay">
+            <span>ISRO PROPULSION MODULE // ACTIVE</span><br>
+            <span style="color: #dfb15b;">TELEMETRY: STABLE ORBIT</span>
+          </div>
+          <div class="craft-hint-overlay">
+            <span>🖱️ Drag to Rotate 3D Craft</span>
+          </div>
+        </div>
+      </div>
+
+        <div class="cards-grid">
+          <div class="info-card">
+            <h3>Chandrayaan Lunar Expeditions</h3>
+            <p><strong>Chandrayaan-1 (2008):</strong> India's first lunar orbiter; discovered water and hydroxyl molecules on the lunar surface.<br><br>
+            <strong>Chandrayaan-2 (2019):</strong> Advanced synthetic aperture radar orbiter mapping lunar mineralogy and volatile distributions.<br><br>
+            <strong>Chandrayaan-3 (2023):</strong> Historic triumph! India became the first nation in history to softly touch down near the Moon's South Pole.</p>
+          </div>
+          <div class="info-card">
+            <h3>Mars Orbiter Mission (Mangalyaan)</h3>
+            <p><strong>Historic First Attempt (2013–2022):</strong> Launched on November 5, 2013, India became the first Asian nation to reach Mars orbit, and the first in the world to do so on its maiden attempt.<br><br>
+            <strong>Cost Efficiency:</strong> Built at an unprecedented cost of $74 million, operating for over 7 years in Mars orbit.</p>
+          </div>
+          <div class="info-card">
+            <h3>Gaganyaan Human Spaceflight</h3>
+            <p><strong>Indigenous Crewed Flight:</strong> Program to send a 3-member crew into a 400 km low Earth orbit for 3 days and safely bring them back.<br><br>
+            <strong>Key Milestones:</strong> TV-D1 abort test successful (2023), crew selection announced (2024), CE-20 human-rated cryogenic engine qualified.</p>
+          </div>
+          <div class="info-card">
+            <h3>Launch Vehicles Architecture</h3>
+            <p><strong>PSLV:</strong> The trusted workhorse with 50+ successful missions.<br><br>
+            <strong>GSLV / LVM3:</strong> India's heaviest rocket, powering Chandrayaan-2, Chandrayaan-3, and human-rated for Gaganyaan.<br><br>
+            <strong>SSLV:</strong> Small Satellite Launch Vehicle for on-demand rapid commercial satellite deployment.</p>
+          </div>
+          <div class="info-card">
+            <h3>Space Applications &amp; Society</h3>
+            <p><strong>Disaster Warning:</strong> Cyclonic storm tracking in the Bay of Bengal and Arabian Sea, saving hundreds of thousands of lives.<br><br>
+            <strong>Agro-Meteorology &amp; Tele-education:</strong> Satellite-enabled remote connectivity and crop yield monitoring across rural India.</p>
+          </div>
+          <div class="info-card">
+            <h3>Future Frontiers: BAS 2035</h3>
+            <p><strong>Bharatiya Antariksha Station:</strong> India's planned sovereign space station in Low Earth Orbit by 2035.<br><br>
+            <strong>Lunar Landing 2040:</strong> National goal to land an Indian astronaut on the surface of the Moon by 2040.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: DRDO AEROSPACE -->
+      <section id="explore-drdo" class="explore-module-section explore-collapsible-module" data-explore-module="drdo">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // DRDO AEROSPACE & STRATEGIC DEFENCE</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill indian-pill">🛡️ DEFENCE RESEARCH &amp; DEVELOPMENT ORGANISATION</div>
+          <h2 class="section-title">DRDO Aerospace &amp; Strategic Defence</h2>
+          <p class="module-desc">
+            Breakthroughs in missile systems, hypersonic flight, anti-satellite technology, and radar defense.
+          </p>
+        </div>
+        <div class="cards-grid">
+          <div class="info-card">
+            <h3>BrahMos Supersonic Cruise Missile</h3>
+            <p><strong>Joint Venture:</strong> Collaborative triumph between India (DRDO) and Russia (NPOM).<br><br>
+            <strong>Speed:</strong> Mach 3.0 (approx. 3,700 km/h) — world's fastest operational supersonic cruise missile.<br><br>
+            <strong>Universal Triad:</strong> Operational across Land, Air (Su-30MKI), Sea, and Subsea platforms.</p>
+          </div>
+          <div class="info-card">
+            <h3>Mission Shakti (ASAT Capability)</h3>
+            <p><strong>Anti-Satellite Milestone:</strong> On March 27, 2019, India tested its anti-satellite weapon, destroying a live satellite in Low Earth Orbit at 283 km altitude.<br><br>
+            <strong>Elite Space Club:</strong> Made India the 4th country in the world with proven ASAT kinetic intercept capability.</p>
+          </div>
+          <div class="info-card">
+            <h3>Hypersonic Technology (HSTDV)</h3>
+            <p><strong>Scramjet Propulsion:</strong> Successfully demonstrated autonomous hypersonic flight at Mach 6+ using an indigenous scramjet engine.<br><br>
+            <strong>Strategic Horizons:</strong> Foundation for next-generation long-range hypersonic cruise missiles and low-cost orbital launchers.</p>
+          </div>
+          <div class="info-card">
+            <h3>Ballistic Missile Defence (BMD) Shield</h3>
+            <p><strong>Two-Tier Interceptor System:</strong> Prithvi Air Defence (PAD) for exo-atmospheric intercepts (50–80 km) and Advanced Air Defence (AAD/Ashwin) for endo-atmospheric intercepts (15–30 km).<br><br>
+            <strong>High-Altitude Defense:</strong> Multi-layered strategic air defense shield protecting high-value national assets.</p>
+          </div>
+          <div class="info-card">
+            <h3>Advanced Airborne Radars</h3>
+            <p><strong>Uttam AESA Radar:</strong> Active Electronically Scanned Array radar designed for fighter aircraft (LCA Tejas Mk1A/Mk2).<br><br>
+            <strong>Swordfish LRTR:</strong> Long-range tracking radar capable of detecting target signatures smaller than a cricket ball at 800+ km.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: SATELLITES EXPLORER -->
+      <section id="explore-satellites" class="explore-module-section explore-collapsible-module" data-explore-module="satellites">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // SATELLITES EXPLORER</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill">🛰️ ORBITAL CONSTELLATIONS</div>
+          <h2 class="section-title">Satellites Explorer</h2>
+          <p class="module-desc">
+            Advanced remote sensing, communication, navigation (NavIC), and space science satellites.
+          </p>
+        </div>
+        <div class="cards-grid">
+          <div class="info-card">
+            <h3>Earth Observation (IRS / Cartosat / RISAT)</h3>
+            <p>High-resolution remote sensing constellations including Resourcesat, Cartosat, and RISAT-2B.<br><br>
+            <strong>Synthetic Aperture Radar:</strong> Day-and-night all-weather radar surveillance through cloud cover and foliage.<br><br>
+            <strong>Applications:</strong> Precision cartography, border security, flood mapping, and coastal ecosystem monitoring.</p>
+          </div>
+          <div class="info-card">
+            <h3>Communication &amp; Broadband (GSAT / CMS)</h3>
+            <p>Includes GSAT-7 series military communication satellites for the Indian Navy, Air Force, and Army.<br><br>
+            <strong>High-Throughput Ku/Ka-band:</strong> GSAT-11 and GSAT-24 powering digital broadband to remote islands, maritime vessels, and commercial aviation.</p>
+          </div>
+          <div class="info-card">
+            <h3>NavIC (IRNSS Navigation Constellation)</h3>
+            <p>Constellation of 7 satellites providing positioning accuracy under 10 meters across the Indian subcontinent and 1,500 km beyond national borders.<br><br>
+            <strong>Dual-Frequency:</strong> L5 and S-band civilian positioning alongside encrypted military positioning signals.</p>
+          </div>
+          <div class="info-card">
+            <h3>Space Science (Astrosat, Aditya-L1, XPoSat)</h3>
+            <p><strong>Astrosat:</strong> India's first dedicated multi-wavelength space astronomy observatory spanning UV to hard X-rays.<br><br>
+            <strong>Aditya-L1:</strong> Operating at Sun-Earth Lagrange Point 1 to study the solar corona, flares, and CMEs.<br><br>
+            <strong>XPoSat:</strong> World's second dedicated space-based X-ray polarimetry satellite.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: SPACE CENTERS -->
+      <section id="explore-centers" class="explore-module-section explore-collapsible-module" data-explore-module="centers">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // SPACE CENTERS & RESEARCH FACILITIES</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill">🏛️ NATIONAL SPACE INFRASTRUCTURE</div>
+          <h2 class="section-title">Space Centers &amp; Research Facilities</h2>
+          <p class="module-desc">
+            The premier launch complexes, satellite design centers, and rocket testing facilities.
+          </p>
+        </div>
+        <div class="cards-grid">
+          <div class="info-card">
+            <h3>Vikram Sarabhai Space Centre (VSSC)</h3>
+            <p><strong>Location:</strong> Thiruvananthapuram, Kerala<br><br>
+            Premier center responsible for the design and development of launch vehicle technology: SLV-3, ASLV, PSLV, GSLV, and LVM3.</p>
+          </div>
+          <div class="info-card">
+            <h3>Satish Dhawan Space Centre (SDSC SHAR)</h3>
+            <p><strong>Location:</strong> Sriharikota Island, Andhra Pradesh<br><br>
+            India's primary spaceport featuring First and Second Launch Pads, solid propellant booster production, and mission control center.</p>
+          </div>
+          <div class="info-card">
+            <h3>U R Rao Satellite Centre (URSC)</h3>
+            <p><strong>Location:</strong> Bengaluru, Karnataka<br><br>
+            Lead center for design, assembly, and testing of communication, remote sensing, and scientific planetary exploration satellites.</p>
+          </div>
+          <div class="info-card">
+            <h3>Space Applications Centre (SAC)</h3>
+            <p><strong>Location:</strong> Ahmedabad, Gujarat<br><br>
+            Conceives and develops optical and microwave remote sensing payloads, communication transponders, and NavIC architecture.</p>
+          </div>
+          <div class="info-card">
+            <h3>ISRO Propulsion Complex (IPRC)</h3>
+            <p><strong>Location:</strong> Mahendragiri, Tamil Nadu<br><br>
+            State-of-the-art facility for qualification and testing of liquid engines, Vikas engines, cryogenic stages, and semi-cryogenic systems.</p>
+          </div>
+          <div class="info-card">
+            <h3>National Remote Sensing Centre (NRSC)</h3>
+            <p><strong>Location:</strong> Hyderabad, Telangana<br><br>
+            Data acquisition, processing, and distribution of Earth observation satellite data from Indian and international constellations.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: EMINENT SCIENTISTS -->
+      <section id="explore-scientists" class="explore-module-section explore-collapsible-module" data-explore-module="scientists">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // EMINENT SCIENTISTS & VISIONARIES</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill">👨‍🔬 SPACE PIONEERS</div>
+          <h2 class="section-title">Eminent Scientists &amp; Visionaries</h2>
+          <p class="module-desc">
+            The founding fathers and pioneering scientists whose visionary leadership built the space program.
+          </p>
+        </div>
+        <div class="cards-grid">
+          <div class="info-card">
+            <h3>Dr. Vikram Sarabhai (1919–1971)</h3>
+            <p><strong>Father of the Indian Space Program:</strong> Established INCOSPAR in 1962, which transformed into ISRO in 1969.<br><br>
+            Pioneered the visionary philosophy that India must be second to none in the application of advanced space technology to the real problems of society.</p>
+          </div>
+          <div class="info-card">
+            <h3>Dr. Homi J. Bhabha (1909–1966)</h3>
+            <p><strong>Architect of Indian Nuclear Science:</strong> Founded TIFR and BARC; convinced the national leadership to invest in fundamental atomic research and space physics.</p>
+          </div>
+          <div class="info-card">
+            <h3>Dr. A.P.J. Abdul Kalam (1931–2015)</h3>
+            <p><strong>Missile Man of India &amp; 11th President:</strong> Project Director for India's first satellite launch vehicle (SLV-3); led DRDO's Integrated Guided Missile Development Programme (Prithvi, Agni).</p>
+          </div>
+          <div class="info-card">
+            <h3>Prof. Satish Dhawan (1920–2002)</h3>
+            <p><strong>Longest-serving ISRO Chairman:</strong> Guided ISRO through extraordinary growth (1972–1984), instituting the pioneering matrix management structure that made PSLV and INSAT operational reality.</p>
+          </div>
+          <div class="info-card">
+            <h3>Prof. U. R. Rao (1932–2017)</h3>
+            <p><strong>Pioneer of Satellite Technology:</strong> Led the construction and launch of India's first satellite, Aryabhata (1975); established the geostationary INSAT communication architecture.</p>
+          </div>
+          <div class="info-card">
+            <h3>Dr. K. Sivan &amp; S. Somanath</h3>
+            <p><strong>Modern Leadership:</strong> Dr. K. Sivan spearheaded the Chandrayaan-2 and Gaganyaan foundations; S. Somanath steered Chandrayaan-3 to its historic lunar South Pole landing and launched Aditya-L1.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 8: SPACE MILESTONES & TECHNOLOGY TIMELINE -->
+      <section id="explore-timeline" class="explore-module-section explore-collapsible-module" data-explore-module="timeline">
+        <div class="module-action-header-bar">
+          <span class="module-status-indicator"><span class="pulse-dot"></span> ARCHIVE VIEW ACTIVE // KEY SPACE MILESTONES & TECHNOLOGY TIMELINE</span>
+          <button class="module-collapse-btn" data-collapse-action="true" title="Close this module">
+            <span>✕</span> Close Module
+          </button>
+        </div>
+        <div class="module-header-block">
+          <div class="module-tag-pill">⏱️ HISTORIC CHRONOLOGY</div>
+          <h2 class="section-title">Key Space Milestones &amp; Technology Timeline</h2>
+          <p class="module-desc">
+            A chronological journey through humanity's frontier in outer space and India's technological leap.
+          </p>
+        </div>
+
+        <div class="explore-missions-timeline">
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1957: Sputnik 1 (Soviet Union)</h3>
+                <p><strong>October 4, 1957:</strong> The world's first artificial satellite inaugurated the Space Age, proving orbital mechanics and space communications are achievable.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1961: Vostok 1 (Yuri Gagarin)</h3>
+                <p><strong>April 12, 1961:</strong> Yuri Gagarin becomes the first human in outer space, completing one orbit of Earth aboard Vostok 1.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1962: INCOSPAR Formed</h3>
+                <p>Indian National Committee for Space Research established under Dr. Vikram Sarabhai, setting up Thumba Equatorial Rocket Launching Station (TERLS).</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1969: Apollo 11 &amp; ISRO Established</h3>
+                <p><strong>July 20, 1969:</strong> Apollo 11 lands Neil Armstrong on the Moon. On August 15, 1969, ISRO is formally established to spearhead national space exploration.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1975: Aryabhata Satellite Launched</h3>
+                <p>India's first satellite launched on April 19, 1975, marking the dawn of indigenous space science.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1980: SLV-3 Rohini Launch</h3>
+                <p>India becomes an orbital launch-capable nation as SLV-3 successfully places the Rohini satellite into low Earth orbit.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>1984: Rakesh Sharma in Space</h3>
+                <p>Wing Commander Rakesh Sharma becomes the first Indian citizen in space aboard Soviet spacecraft Soyuz T-11.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>2008: Chandrayaan-1 Discovers Lunar Water</h3>
+                <p>India's maiden deep space mission discovers water and hydroxyl molecules across the Moon's polar regolith.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>2013: Mars Orbiter Mission (Mangalyaan)</h3>
+                <p>India becomes the first nation in the world to reach Mars orbit on its maiden attempt at an ultra-frugal cost of $74M.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>2017: 104 Satellites in 1 Rocket</h3>
+                <p>PSLV-C37 creates a historic world record by deploying 104 satellites from multiple nations in a single mission.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>2019: Mission Shakti (ASAT Test)</h3>
+                <p>India successfully intercepts a live satellite in Low Earth Orbit, demonstrating strategic deterrence.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>2023: Chandrayaan-3 Lunar South Pole Soft Landing</h3>
+                <p><strong>August 23, 2023:</strong> Vikram lander makes history touching down softly near the Moon's South Pole; Aditya-L1 launches to Sun-Earth L1.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-content">
+                <h3>2024–Future: Gaganyaan &amp; BAS 2035</h3>
+                <p>Gaganyaan crewed flights, semi-cryogenic heavy lift, and the Bharatiya Antariksha Station (2035).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+        </div>
+      </section>
+
+      <!-- SECTION 9: DASHAVATARA COSMIC EPOCHS -->
+      <section id="dashavatara-explorer" class="explore-module-section dashavatara-section">
+        <div class="dashavatara-header">
+          <div class="dashavatara-badge">॥ दशावतार ब्रह्माण्ड क्रम ॥ THE TEN COSMIC EPOCHS</div>
+          <h2 class="section-title">Dashavatara: Evolution of the Cosmic Universe</h2>
+          <p class="dashavatara-subtitle">Bridging Ancient Cosmological Philosophy with Modern Astrophysics</p>
+        </div>
+        <div class="dashavatara-grid" id="dashavatara-grid"></div>
+        <div class="dashavatara-detail-card" id="dashavatara-detail-card"></div>
+      </section>
+
+      <!-- SECTION 10: SPACE KNOWLEDGE QUIZ -->
+      <section id="explore-quiz" class="explore-module-section quiz-section">
+        <div class="module-header-block">
+          <div class="module-tag-pill">🧠 INTERACTIVE CHALLENGE</div>
+          <h2 class="section-title">Space Knowledge Quiz</h2>
+          <p class="module-desc">Test your understanding of orbital physics, planetary science, and cosmic discoveries.</p>
+        </div>
+        <div id="quiz-box" style="max-width: 650px; margin: 0 auto; background: rgba(10, 20, 48, 0.75); border: 1px solid rgba(56, 189, 248, 0.28); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+          <!-- Quiz Start View -->
+          <div id="quiz-start" style="text-align: center;">
+            <p style="color: #cfe8ff; margin-bottom: 24px; font-size: 1.05rem;">Challenge yourself with questions covering celestial mechanics, planetary science, and historic space exploration milestones.</p>
+            <button onclick="startQuiz()" class="btn" style="padding: 12px 32px; font-size: 1rem; cursor: pointer;">Start Cosmic Quiz</button>
+          </div>
+
+          <!-- Quiz Game View -->
+          <div id="quiz-game" style="display: none;">
+            <h3 id="quiz-question" style="color: #fff; margin-bottom: 20px; font-size: 1.25rem;"></h3>
+            <div id="quiz-options" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            <div id="quiz-feedback" style="margin-top: 15px; font-weight: bold; font-size: 1.1rem; min-height: 24px;"></div>
+          </div>
+
+          <!-- Quiz Final Result View -->
+          <div id="quiz-final" style="display: none; text-align: center;">
+            <h3 id="quiz-score" style="color: #4fc3f7; font-size: 1.6rem; margin-bottom: 15px;"></h3>
+            <button onclick="resetQuiz()" class="btn" style="padding: 10px 25px; cursor: pointer;">Retake Quiz</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 5: PLANET MISSION CONTROL (Responsive & Overflow-Free Dashboard) -->
+    <div id="view-mission-control" class="cosmos-view">
+      <section id="cosmos-mission-control">
+        <div class="mission-control-container">
+          
+          <!-- Mission Control Header -->
+          <header class="mission-header">
+            <div class="mission-header-top">
+              <div class="mission-title-group">
+                <div class="mission-divine-tag">॥ यात्रा ब्रह्माण्ड क्रम ॥ INTERPLANETARY 3D SIMULATOR</div>
+                <h1>PLANET MISSION CONTROL</h1>
+              </div>
+              <div class="mission-header-badges">
+                <div class="mission-badge" id="cosmos-mission-id-badge">MISSION ID: COSMOS-M-2026</div>
+                <div class="mission-signal-pill" id="cosmos-mission-signal-pill">
+                  <span class="signal-dot"></span>
+                  <span id="cosmos-mission-signal-text">SIGNAL: 100% NOMINAL</span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <!-- 1. CENTRAL 3D MISSION VISUALIZATION ARENA (CINEMATIC HERO) -->
+          <div class="mission-sim-viewport-container" id="cosmos-mission-sim-container">
+            
+            <!-- Sim Viewport Top HUD Controls (Hidden during Fullscreen Cinematic Travel) -->
+            <div class="sim-viewport-topbar" id="sim-viewport-topbar">
+              <div class="sim-feed-status">
+                <span class="sim-rec-dot"></span>
+                <span class="sim-feed-text" id="sim-feed-status-text">3D SOLAR SYSTEM ENGINE // STANDBY</span>
+              </div>
+              <div class="sim-camera-switcher">
+                <span class="sim-cam-label">CAMERA:</span>
+                <button class="sim-cam-btn active" data-cam="auto" title="Automatic Cinematic Director">🎬 Auto</button>
+                <button class="sim-cam-btn" data-cam="follow" title="Spacecraft Follow Camera">🚀 Follow</button>
+                <button class="sim-cam-btn" data-cam="cockpit" title="First-Person Pilot Cockpit View">🛸 Cockpit</button>
+                <button class="sim-cam-btn" data-cam="wide" title="Wide Solar System View">🌐 Solar</button>
+                <button class="sim-cam-btn" data-cam="target" title="Destination Planet Focus">🪐 Target</button>
+                <button class="sim-cam-btn" id="sim-cinematic-btn" title="Toggle Fullscreen Cinematic Mode">⛶ Fullscreen</button>
+              </div>
+            </div>
+
+            <!-- Interactive 3D Mission Canvas & Overlays -->
+            <div class="sim-canvas-wrapper" id="sim-canvas-wrapper">
+              <canvas id="cosmos-mission-canvas"></canvas>
+
+              <!-- Cockpit First-Person HUD (Visible in Cockpit Camera Mode) -->
+              <div class="sim-cockpit-hud" id="sim-cockpit-hud" style="display: none;">
+                <div class="cockpit-canopy-frame"></div>
+                <div class="cockpit-reticle-center">
+                  <div class="cockpit-crosshair"></div>
+                  <div class="cockpit-pitch-ladder"></div>
+                </div>
+                <div class="cockpit-hud-left">
+                  <div class="cockpit-gauge">
+                    <span class="gauge-title">VELOCITY VECTOR</span>
+                    <span class="gauge-val" id="cockpit-speed">0.0 km/s</span>
+                  </div>
+                  <div class="cockpit-gauge">
+                    <span class="gauge-title">INERTIAL ATTITUDE</span>
+                    <span class="gauge-val">P: +02.4° // Y: 184°</span>
+                  </div>
+                </div>
+                <div class="cockpit-hud-right">
+                  <div class="cockpit-gauge">
+                    <span class="gauge-title">TARGET BEARING</span>
+                    <span class="gauge-val" id="cockpit-target-bearing">LOCKED [MARS]</span>
+                  </div>
+                  <div class="cockpit-gauge">
+                    <span class="gauge-title">RCS THRUST</span>
+                    <span class="gauge-val" style="color: #10b981;">NOMINAL (98%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Subtle Cinematic Micro-Controls (Minimal corner icons during fullscreen flight) -->
+              <div class="cinematic-micro-controls" id="cinematic-micro-controls" style="display: none;">
+                <button class="micro-ctrl-btn" id="micro-cam-btn" title="Cycle Camera View (Auto / Follow / Wide / Target)">🎥</button>
+                <button class="micro-ctrl-btn" id="micro-telemetry-btn" title="Peek Live Telemetry">📊</button>
+                <button class="micro-ctrl-btn" id="micro-audio-btn" title="Toggle Sound">🔊</button>
+                <button class="micro-ctrl-btn micro-exit-btn" id="micro-exit-btn" title="Exit Cinematic Flight">✕</button>
+              </div>
+
+              <!-- Optional Peekable Live Telemetry HUD (Hidden by default during cinematic travel) -->
+              <div class="sim-telemetry-hud" id="sim-telemetry-hud">
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">MET</span>
+                  <span class="sim-stat-val sim-met-val" id="sim-stat-met">00:00:00</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">VELOCITY</span>
+                  <span class="sim-stat-val" id="sim-stat-velocity">0.0 km/s</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">DIST REM</span>
+                  <span class="sim-stat-val" id="sim-stat-distance">--</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">FUEL</span>
+                  <div class="sim-meter-bar-wrap">
+                    <div class="sim-meter-fill sim-fuel-fill" id="sim-fuel-fill" style="width: 100%;"></div>
+                  </div>
+                  <span class="sim-stat-val" id="sim-stat-fuel">100%</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">SIGNAL</span>
+                  <span class="sim-stat-val" id="sim-stat-signal">100%</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">ENGINE</span>
+                  <span class="sim-stat-val sim-engine-val" id="sim-stat-engine">STANDBY</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">HULL</span>
+                  <div class="sim-meter-bar-wrap">
+                    <div class="sim-meter-fill sim-hull-fill" id="sim-hull-fill" style="width: 100%;"></div>
+                  </div>
+                  <span class="sim-stat-val" id="sim-stat-hull">100%</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">THERMAL</span>
+                  <span class="sim-stat-val sim-thermal-val" id="sim-stat-thermal">OPTIMAL</span>
+                </div>
+                <div class="sim-hud-stat">
+                  <span class="sim-stat-label">CAMERA</span>
+                  <span class="sim-stat-val sim-guidance-val" id="sim-stat-guidance">AUTO</span>
+                </div>
+              </div>
+
+              <!-- 1. MISSION PLANNING PHASE OVERLAY (Before Launch) -->
+              <div class="sim-planning-overlay" id="sim-planning-overlay" style="display: none;">
+                <div class="sim-planning-card">
+                  <div class="planning-header">
+                    <div class="planning-badge">॥ योजना चरणम् ॥ PRE-FLIGHT MISSION PLANNING</div>
+                    <h2 id="plan-target-title">EARTH → MARS TRAJECTORY</h2>
+                    <p id="plan-target-objective">Configure origin, destination, and interplanetary trajectory before entering full-screen 3D cinematic space travel.</p>
+                  </div>
+
+                  <!-- Origin & Destination Quick Selectors -->
+                  <div class="planning-route-endpoints">
+                    <div class="endpoint-select-group">
+                      <label for="plan-origin-select">LAUNCH ORIGIN</label>
+                      <select id="plan-origin-select">
+                        <option value="mercury">MERCURY</option>
+                        <option value="venus">VENUS</option>
+                        <option value="earth" selected>EARTH</option>
+                        <option value="moon">MOON</option>
+                        <option value="mars">MARS</option>
+                        <option value="jupiter">JUPITER</option>
+                        <option value="saturn">SATURN</option>
+                        <option value="uranus">URANUS</option>
+                        <option value="neptune">NEPTUNE</option>
+                      </select>
+                    </div>
+                    <div class="endpoint-arrow">⟶</div>
+                    <div class="endpoint-select-group">
+                      <label for="plan-dest-select">DESTINATION TARGET</label>
+                      <select id="plan-dest-select">
+                        <option value="mercury">MERCURY</option>
+                        <option value="venus">VENUS</option>
+                        <option value="earth">EARTH</option>
+                        <option value="moon">MOON</option>
+                        <option value="mars" selected>MARS</option>
+                        <option value="jupiter">JUPITER</option>
+                        <option value="saturn">SATURN</option>
+                        <option value="uranus">URANUS</option>
+                        <option value="neptune">NEPTUNE</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Target Route Specs Bar -->
+                  <div class="planning-specs-strip">
+                    <div class="plan-spec-item">
+                      <span class="spec-label">ROUTE</span>
+                      <span class="spec-val" id="plan-spec-dest">EARTH → MARS</span>
+                    </div>
+                    <div class="plan-spec-item">
+                      <span class="spec-label">ROUTE DISTANCE</span>
+                      <span class="spec-val" id="plan-spec-dist">78.3 M km</span>
+                    </div>
+                    <div class="plan-spec-item">
+                      <span class="spec-label">FLIGHT DURATION</span>
+                      <span class="spec-val color-cyan" id="plan-spec-duration">~20.0s</span>
+                    </div>
+                    <div class="plan-spec-item">
+                      <span class="spec-label">EXPECTED FLYBYS</span>
+                      <span class="spec-val" id="plan-spec-flybys">Moon</span>
+                    </div>
+                  </div>
+
+                  <!-- Planet Environmental Hazards Tag Cloud -->
+                  <div class="planning-hazards-block">
+                    <span class="hazards-title">SECTOR HAZARDS:</span>
+                    <div class="hazards-tags-wrap" id="plan-hazards-list">
+                      <span class="hazard-tag">GLOBAL FERRIC DUST STORM</span>
+                    </div>
+                  </div>
+
+                  <!-- 4 Route Strategy Cards -->
+                  <div class="planning-routes-section">
+                    <span class="routes-section-title">TRAJECTORY PROFILE:</span>
+                    <div class="planning-routes-grid">
+                      <div class="route-card selected" data-route="direct" id="route-card-direct">
+                        <div class="route-header">
+                          <span class="route-tag tag-direct">DIRECT</span>
+                          <span class="route-risk-badge badge-moderate">BALANCED</span>
+                        </div>
+                        <h4 class="route-name">Hohmann Transfer</h4>
+                        <p class="route-desc">Smooth curved interplanetary arc balancing fuel and duration.</p>
+                        <div class="route-stats-row">
+                          <div class="r-stat"><span>BURN:</span> <strong id="rc-direct-burn">~48%</strong></div>
+                          <div class="r-stat"><span>TIME:</span> <strong id="rc-direct-time">20.0s</strong></div>
+                        </div>
+                      </div>
+
+                      <div class="route-card" data-route="fuel_saving" id="route-card-fuel_saving">
+                        <div class="route-header">
+                          <span class="route-tag tag-fuel">FUEL SAVING</span>
+                          <span class="route-risk-badge badge-low">LOW RISK</span>
+                        </div>
+                        <h4 class="route-name">Ion Drift Arc</h4>
+                        <p class="route-desc">Low-thrust continuous ion cruise preserving maximum fuel reserves.</p>
+                        <div class="route-stats-row">
+                          <div class="r-stat"><span>BURN:</span> <strong id="rc-fuel-burn">~32%</strong></div>
+                          <div class="r-stat"><span>TIME:</span> <strong id="rc-fuel-time">23.0s</strong></div>
+                        </div>
+                      </div>
+
+                      <div class="route-card" data-route="fastest" id="route-card-fastest">
+                        <div class="route-header">
+                          <span class="route-tag tag-fast">HIGH-THRUST</span>
+                          <span class="route-risk-badge badge-high">HIGH RISK</span>
+                        </div>
+                        <h4 class="route-name">Brachistochrone</h4>
+                        <p class="route-desc">Aggressive continuous engine burn minimizing transit time.</p>
+                        <div class="route-stats-row">
+                          <div class="r-stat"><span>BURN:</span> <strong id="rc-fast-burn">~70%</strong></div>
+                          <div class="r-stat"><span>TIME:</span> <strong id="rc-fast-time">17.0s</strong></div>
+                        </div>
+                      </div>
+
+                      <div class="route-card" data-route="gravity_assist" id="route-card-gravity_assist">
+                        <div class="route-header">
+                          <span class="route-tag tag-assist">SLINGSHOT</span>
+                          <span class="route-risk-badge badge-dynamic">DYNAMIC</span>
+                        </div>
+                        <h4 class="route-name">Gravity-Assist</h4>
+                        <p class="route-desc">Sweeping wide parabolic slingshot for close celestial flybys.</p>
+                        <div class="route-stats-row">
+                          <div class="r-stat"><span>BURN:</span> <strong id="rc-assist-burn">~38%</strong></div>
+                          <div class="r-stat"><span>TIME:</span> <strong id="rc-assist-time">21.5s</strong></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Dynamic Planning Matrix Bar -->
+                  <div class="planning-matrix-bar">
+                    <div class="matrix-tile">
+                      <span class="mat-label">ESTIMATED FUEL BURN</span>
+                      <div class="plan-fuel-meter-wrap">
+                        <div class="plan-fuel-meter-fill" id="plan-matrix-fuel-bar" style="width: 48%;"></div>
+                      </div>
+                      <span class="mat-val" id="plan-matrix-fuel-val">48% (52% RESERVE)</span>
+                    </div>
+                    <div class="matrix-tile">
+                      <span class="mat-label">CINEMATIC TRANSIT</span>
+                      <span class="mat-val" id="plan-matrix-time-val">20.0 SECONDS</span>
+                    </div>
+                    <div class="matrix-tile">
+                      <span class="mat-label">RISK PROFILE</span>
+                      <span class="mat-pill pill-moderate" id="plan-matrix-risk-pill">MODERATE</span>
+                    </div>
+                    <div class="matrix-tile">
+                      <span class="mat-label">ARRIVAL MODE</span>
+                      <span class="mat-val color-cyan" id="plan-matrix-status-val">ORBITAL CAPTURE</span>
+                    </div>
+                  </div>
+
+                  <div class="planning-actions">
+                    <button class="plan-btn-confirm" id="sim-plan-confirm-btn">🚀 LAUNCH 3D CINEMATIC MISSION</button>
+                    <button class="plan-btn-cancel" id="sim-plan-cancel-btn">✕ CANCEL</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. MINIMAL INTERACTIVE DECISION OVERLAY (Appears cleanly after visual hazard) -->
+              <div class="sim-event-decision-overlay minimal-decision-dock" id="sim-event-overlay" style="display: none;">
+                <div class="sim-event-card minimal-decision-card">
+                  <div class="sim-event-top-bar">
+                    <span class="sim-event-alert-tag" id="sim-event-title">⚠ COURSE CORRECTION</span>
+                  </div>
+                  <div class="sim-event-actions-3col" id="sim-event-actions">
+                    <button class="sim-decision-btn-tactical btn-opt-a" id="sim-decision-btn-a">
+                      <span class="btn-tact-title" id="sim-opt-a-title">MANUAL CORRECTION</span>
+                      <span class="btn-tact-effect" id="sim-opt-a-effect">Fuel -8% · Safe</span>
+                    </button>
+                    <button class="sim-decision-btn-tactical btn-opt-b" id="sim-decision-btn-b">
+                      <span class="btn-tact-title" id="sim-opt-b-title">AUTO-STABILIZE</span>
+                      <span class="btn-tact-effect" id="sim-opt-b-effect">Fuel -5% · Hull -6%</span>
+                    </button>
+                    <button class="sim-decision-btn-tactical btn-opt-c" id="sim-decision-btn-c">
+                      <span class="btn-tact-title" id="sim-opt-c-title">ALTERNATE VECTOR</span>
+                      <span class="btn-tact-effect" id="sim-opt-c-effect">Fuel -12% · Boost</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. CONTROLLED FAILURE RESULT SCREEN (Revealed after failure cinematic) -->
+              <div class="sim-failure-overlay" id="sim-failure-overlay" style="display: none;">
+                <div class="sim-failure-card">
+                  <div class="sim-failure-badge">॥ आपत्काल ॥ MISSION FAILED</div>
+                  <h2 id="sim-failure-title">MISSION FAILED</h2>
+                  <p class="sim-failure-desc" id="sim-fail-reason">Spacecraft lost propulsion stability during deep space transit.</p>
+
+                  <div class="sim-failure-diagnostics-grid">
+                    <div class="fail-stat">
+                      <span class="fail-label">ROUTE</span>
+                      <span class="fail-val" id="sim-fail-route">EARTH → MARS</span>
+                    </div>
+                    <div class="fail-stat">
+                      <span class="fail-label">FINAL HULL</span>
+                      <span class="fail-val fail-highlight" id="sim-fail-hull">0%</span>
+                    </div>
+                    <div class="fail-stat">
+                      <span class="fail-label">FINAL FUEL</span>
+                      <span class="fail-val" id="sim-fail-fuel">0%</span>
+                    </div>
+                    <div class="fail-stat">
+                      <span class="fail-label">ELAPSED TIME</span>
+                      <span class="fail-val" id="sim-fail-time">00:14</span>
+                    </div>
+                  </div>
+
+                  <div class="sim-failure-actions">
+                    <button class="sim-fail-btn btn-retry" id="sim-fail-retry-btn">↺ RETRY MISSION</button>
+                    <button class="sim-fail-btn btn-replan" id="sim-fail-replan-btn">🛠 REPLAN ROUTE</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. COSMOS MISSION RESULT SCREEN (Revealed ONLY after completion scan cinematic) -->
+              <div class="sim-completion-overlay" id="sim-completion-overlay" style="display: none;">
+                <div class="sim-completion-card result-reveal-card">
+                  <div class="sim-completion-badge">॥ जयति ब्रह्माण्डम् ॥ MISSION COMPLETE</div>
+                  <h2 id="sim-completion-title">MARS ARRIVAL VERIFIED</h2>
+                  <p class="sim-completion-desc" id="sim-completion-desc">Orbital insertion stabilized and full planetary spectral scan transmitted.</p>
+                  
+                  <div class="sim-completion-stats-grid result-10stat-grid">
+                    <div class="sim-comp-stat">
+                      <span class="comp-label">DESTINATION</span>
+                      <span class="comp-val" id="sim-comp-planet">MARS</span>
+                    </div>
+                    <div class="sim-comp-stat">
+                      <span class="comp-label">DISTANCE TRAVELLED</span>
+                      <span class="comp-val" id="sim-comp-distance">78.3 M km</span>
+                    </div>
+                    <div class="sim-comp-stat">
+                      <span class="comp-label">TRAVEL DURATION</span>
+                      <span class="comp-val" id="sim-comp-time">20.0s</span>
+                    </div>
+                    <div class="sim-comp-stat">
+                      <span class="comp-label">FUEL REMAINING</span>
+                      <span class="comp-val" id="sim-comp-fuel">54%</span>
+                    </div>
+                    <div class="sim-comp-stat">
+                      <span class="comp-label">MAX VELOCITY</span>
+                      <span class="comp-val" id="sim-comp-velocity">34.8 km/s</span>
+                    </div>
+                    <div class="sim-comp-stat">
+                      <span class="comp-label">HULL INTEGRITY</span>
+                      <span class="comp-val" id="sim-comp-hull">100%</span>
+                    </div>
+                    <div class="sim-comp-stat comp-stat-half">
+                      <span class="comp-label">FLYBYS</span>
+                      <span class="comp-val" id="sim-comp-flybys">Moon</span>
+                    </div>
+                    <div class="sim-comp-stat comp-stat-half">
+                      <span class="comp-label">HAZARDS ENCOUNTERED</span>
+                      <span class="comp-val" id="sim-comp-hazards">Silica Dust Storm</span>
+                    </div>
+                    <div class="sim-comp-stat comp-stat-half">
+                      <span class="comp-label">MISSION DECISIONS</span>
+                      <span class="comp-val" id="sim-comp-decisions">Inertial Radar Correction</span>
+                    </div>
+                    <div class="sim-comp-stat comp-stat-half">
+                      <span class="comp-label">SCIENTIFIC DATA COLLECTED</span>
+                      <span class="comp-val color-cyan" id="sim-comp-data">5.4 TB Spectral Survey</span>
+                    </div>
+                    <div class="sim-comp-stat comp-stat-wide">
+                      <span class="comp-label">MISSION OUTCOME</span>
+                      <span class="comp-val comp-rating" id="sim-comp-rating">★ ★ ★ ★ ★ OPTIMAL MISSION EXECUTION</span>
+                    </div>
+                  </div>
+
+                  <div class="sim-completion-actions">
+                    <button class="sim-comp-btn btn-replay" id="sim-replay-btn">↺ REPLAY JOURNEY</button>
+                    <button class="sim-comp-btn btn-new" id="sim-new-target-btn">🚀 PLAN NEW ROUTE</button>
+                    <button class="sim-comp-btn btn-deck" id="sim-return-deck-btn">🎛 CONTROL DECK</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 2. LOWER OPERATIONS DECK (ALL EXISTING CONTROLS PRESERVED + ORIGIN SELECTOR) -->
+          <div class="mission-interface">
+            <!-- Left: Origin & Destination Selection & Details Panel -->
+            <div class="control-panel">
+              <div class="planet-selection">
+                <h3>SELECT FLIGHT ROUTE</h3>
+                <div class="planet-selector route-dual-selector">
+                  <div class="route-select-col">
+                    <label class="route-mini-label" for="cosmos-mission-origin-select">ORIGIN</label>
+                    <select id="cosmos-mission-origin-select">
+                      <option value="mercury">MERCURY</option>
+                      <option value="venus">VENUS</option>
+                      <option value="earth" selected>EARTH</option>
+                      <option value="moon">MOON</option>
+                      <option value="mars">MARS</option>
+                      <option value="jupiter">JUPITER</option>
+                      <option value="saturn">SATURN</option>
+                      <option value="uranus">URANUS</option>
+                      <option value="neptune">NEPTUNE</option>
+                    </select>
+                  </div>
+                  <div class="route-select-col">
+                    <label class="route-mini-label" for="cosmos-mission-planet-select">DESTINATION</label>
+                    <select id="cosmos-mission-planet-select">
+                      <option value="">-- Choose Destination --</option>
+                      <option value="mercury">MERCURY</option>
+                      <option value="venus">VENUS</option>
+                      <option value="earth">EARTH</option>
+                      <option value="moon">MOON</option>
+                      <option value="mars">MARS</option>
+                      <option value="jupiter">JUPITER</option>
+                      <option value="saturn">SATURN</option>
+                      <option value="uranus">URANUS</option>
+                      <option value="neptune">NEPTUNE</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="planet-info-panel">
+                  <div class="planet-visual">
+                    <div id="cosmos-mission-planet-graphic" class="planet-sphere"></div>
+                    <h2 id="cosmos-mission-planet-name">SELECT A DESTINATION</h2>
+                  </div>
+
+                  <div class="planet-details">
+                    <div class="detail-row">
+                      <span class="detail-label">Distance from Sun:</span>
+                      <span class="detail-value" id="cosmos-mission-distance">--</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Moons:</span>
+                      <span class="detail-value" id="cosmos-mission-moons">--</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Gravity:</span>
+                      <span class="detail-value" id="cosmos-mission-gravity">--</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Temperature:</span>
+                      <span class="detail-value" id="cosmos-mission-temperature">--</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Rotation Period:</span>
+                      <span class="detail-value" id="cosmos-mission-rotation">--</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Orbital Period:</span>
+                      <span class="detail-value" id="cosmos-mission-orbit">--</span>
+                    </div>
+                  </div>
+
+                  <div class="mission-objective">
+                    <h3>MISSION OBJECTIVE</h3>
+                    <p id="cosmos-mission-objective-text">Select a destination planet or Moon to configure your 3D Solar System trajectory.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Mission Operations & Log Panel -->
+            <div class="mission-display">
+              <div class="hud-container">
+                <div class="status-hud">
+                  <div class="hud-row">
+                    <span class="hud-label">ROUTE:</span>
+                    <span class="hud-value" id="cosmos-mission-target">NONE</span>
+                  </div>
+                  <div class="hud-row">
+                    <span class="hud-label">STATUS:</span>
+                    <span class="hud-value" id="cosmos-mission-status">READY</span>
+                  </div>
+                  <div class="hud-row">
+                    <span class="hud-label">PHASE:</span>
+                    <span class="hud-value" id="cosmos-mission-phase">Pre-Launch</span>
+                  </div>
+                  <div class="hud-row">
+                    <span class="hud-label">TRAJECTORY:</span>
+                    <span class="hud-value" id="cosmos-mission-travel">Waiting for launch</span>
+                  </div>
+                  <div class="hud-row" style="grid-column: 1 / -1;">
+                    <span class="hud-label">TARGET SCAN:</span>
+                    <span class="hud-value" id="cosmos-mission-target-status">Standby</span>
+                  </div>
+                </div>
+
+                <div class="progress-section">
+                  <div class="progress-info">
+                    <span class="progress-label">MISSION PROGRESS</span>
+                    <span id="cosmos-mission-progress" class="progress-percentage">0%</span>
+                  </div>
+                  <div class="progress-bar-background">
+                    <div id="cosmos-mission-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                    <div class="progress-glow"></div>
+                  </div>
+                </div>
+
+                <div class="mission-log">
+                  <h3>MISSION LOG</h3>
+                  <div id="cosmos-mission-log" class="log-container">
+                    <div class="log-entry system">SYSTEM READY - 3D Solar System Travel Engine Online</div>
+                  </div>
+                </div>
+
+                <div class="control-actions">
+                  <button id="cosmos-mission-start-btn" class="mission-button start-button" disabled>PLAN &amp; LAUNCH MISSION</button>
+                  <button id="cosmos-mission-reset-btn" class="mission-button reset-button">RESET MISSION</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW 6: BUILD YOUR OWN SOLAR SYSTEM (Futuristic 3D Space Laboratory) -->
+        <div id="view-builder" class="cosmos-view">
+      <div class="cosmos-builder-container" id="cosmos-builder-root">
+        
+        <!-- Lab Header / Top Navigation Bar -->
+        <header class="cosmos-builder-topbar">
+          <div class="builder-topbar-left">
+            <button class="builder-back-btn" data-view-target="view-explore" title="Return to Explore View">
+              ← Back to Explore
+            </button>
+            <button class="builder-btn-action" id="builder-toggle-sidebar-btn" title="Peek / Toggle Navigation Menu">
+              ☰ Menu
+            </button>
+            <div class="builder-title-wrap">
+              <h1>SOLAR SYSTEM LABORATORY</h1>
+              <span class="builder-subtitle">ANANTA CELESTIAL SIMULATION // COSMIC ORDER (RTA)</span>
+            </div>
+          </div>
+          <div class="builder-topbar-right">
+            <div class="builder-status-badge">
+              <span class="status-pulse-dot"></span>
+              <span id="builder-sim-status-badge">SIMULATION: ACTIVE</span>
+            </div>
+            <button class="builder-btn-action builder-glow-btn" id="builder-observation-btn" title="Enter Pure 3D Observation Mode">🔭 Observation Mode</button>
+            <button class="builder-btn-action" id="builder-tour-btn" title="Start Guided Cinematic Tour Across the Solar System">🚀 Cinematic Tour</button>
+            <button class="builder-btn-action" id="builder-compare-btn" title="Compare Two Planets Side-by-Side">⚖️ Compare</button>
+            <button class="builder-btn-action" id="builder-toggle-fullscreen-btn" title="Toggle Fullscreen 3D Viewport">⛶ Fullscreen</button>
+            <button class="builder-btn-action" id="builder-quick-reset-btn" title="Reset to Standard 8-Planet System">↺ Reset</button>
+          </div>
+        </header>
+
+        <!-- Mobile Drawer Selector Tabs (< 1024px) -->
+        <div class="builder-mobile-tabs">
+          <button class="builder-mob-tab active" data-tab="viewport">🔭 3D System</button>
+          <button class="builder-mob-tab" data-tab="inspector">🛠️ Controls & Inspector</button>
+          <button class="builder-mob-tab" data-tab="stats">📊 Stats</button>
+        </div>
+
+        <!-- Dominant 3D Laboratory Workspace with Unified Floating Glass Panel -->
+        <div class="cosmos-builder-workspace" id="cosmos-builder-workspace">
+          
+          <!-- MAIN VIEWPORT: DOMINANT 3D SIMULATION (MAXIMUM CENTRAL SPACE) -->
+          <main class="cosmos-builder-viewport" id="builder-viewport">
+            
+            <!-- Live 3D WebGL Canvas Container -->
+            <div id="cosmos-builder-canvas" class="cosmos-builder-canvas"></div>
+
+            <!-- Viewport Overlay: Camera Navigation Controls -->
+            <div class="builder-viewport-tools top-left">
+              <span class="tool-label">VIEW:</span>
+              <button class="cam-btn" id="builder-cam-angled" title="Default 3D Perspective">3D</button>
+              <button class="cam-btn" id="builder-cam-top" title="Top-Down Orbital View">Top</button>
+              <button class="cam-btn" id="builder-cam-side" title="Side Ecliptic View">Side</button>
+              <button class="cam-btn" id="builder-cam-reset" title="Reset Camera View">↺</button>
+            </div>
+
+            <!-- Viewport Overlay: Visual Toggles & Trail Selector -->
+            <div class="builder-viewport-tools top-right">
+              <div class="builder-trail-selector-wrap">
+                <span class="tool-label">TRAILS:</span>
+                <select id="builder-trail-mode" class="builder-tool-select" title="Orbital Trail Mode">
+                  <option value="all">All Orbits</option>
+                  <option value="focus">Focus Only</option>
+                  <option value="off">Off</option>
+                </select>
+              </div>
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="builder-toggle-habzone" checked>
+                <span>Hab Zone</span>
+              </label>
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="builder-toggle-asteroids" checked>
+                <span>Asteroids</span>
+              </label>
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="builder-toggle-moons" checked>
+                <span>Moons</span>
+              </label>
+            </div>
+
+            <!-- Viewport Overlay: Celestial Event Banner (Alignments, Eclipses, Comets) -->
+            <div id="builder-event-banner" class="builder-event-banner" style="display: none;">
+              <span class="event-icon" id="builder-event-icon">✨</span>
+              <div class="event-content">
+                <span class="event-tag" id="builder-event-tag">CELESTIAL EVENT</span>
+                <span class="event-title" id="builder-event-title">Cosmic Syzygy Alignment Detected</span>
+              </div>
+            </div>
+
+            <!-- Viewport Overlay: Selected Planet Floating Reticle Tag -->
+            <div id="builder-floating-tag" class="builder-floating-tag" style="display: none;">
+              <span class="tag-dot"></span>
+              <span id="builder-tag-name">Planet</span>
+              <span id="builder-tag-dist" class="tag-dist">80 AU</span>
+            </div>
+
+            <!-- Viewport Overlay: Live Simulation Control & Step-Time Pill -->
+            <div class="builder-sim-pill" id="builder-sim-pill">
+              <!-- Play / Pause Toggle -->
+              <button class="sim-play-btn" id="builder-sim-toggle" title="Pause / Resume Simulation">
+                <span id="builder-sim-play-icon">⏸️</span>
+                <span id="builder-sim-play-text">PAUSE</span>
+              </button>
+
+              <div class="sim-speed-divider"></div>
+
+              <!-- Time Multiplier Presets -->
+              <div class="sim-speed-group">
+                <span class="speed-label">TIME FLOW:</span>
+                <button class="speed-btn active" data-speed="1.0">1×</button>
+                <button class="speed-btn" data-speed="10.0">10×</button>
+                <button class="speed-btn" data-speed="100.0">100×</button>
+                <button class="speed-btn" data-speed="1000.0">1000×</button>
+              </div>
+
+              <div class="sim-speed-divider"></div>
+
+              <!-- Physical Step-Time Controls -->
+              <div class="sim-step-group">
+                <span class="speed-label">STEP:</span>
+                <button class="step-btn" id="builder-step-1d" title="Advance celestial bodies by 1 day">+1D</button>
+                <button class="step-btn" id="builder-step-10d" title="Advance celestial bodies by 10 days">+10D</button>
+                <button class="step-btn" id="builder-step-100d" title="Advance celestial bodies by 100 days">+100D</button>
+              </div>
+
+              <div class="sim-speed-divider"></div>
+
+              <!-- Procedural Comet Spawn -->
+              <button class="builder-comet-btn" id="builder-spawn-comet-btn" title="Spawn an elliptical procedural comet">
+                ☄️ Comet
+              </button>
+            </div>
+
+            <!-- Observation Mode Floating HUD (Visible ONLY in Observation Mode) -->
+            <div id="builder-obs-hud" class="builder-obs-hud" style="display: none;">
+              <div class="obs-hud-left">
+                <div class="obs-badge">
+                  <span class="status-pulse-dot"></span>
+                  <span>OBSERVATION MODE</span>
+                </div>
+                <div class="obs-target-pill" id="builder-obs-target-pill">
+                  <span id="builder-obs-target-name">Target: Full System</span>
+                </div>
+              </div>
+              <div class="obs-hud-right">
+                <button class="builder-obs-exit-btn" id="builder-obs-exit-btn">✕ Exit Observation Mode</button>
+              </div>
+            </div>
+
+            <!-- Cinematic Tour Floating HUD (Visible ONLY during Tour) -->
+            <div id="builder-tour-hud" class="builder-tour-hud" style="display: none;">
+              <div class="tour-hud-info">
+                <span class="tour-step-badge" id="builder-tour-step-badge">STOP 1 OF 9</span>
+                <h3 class="tour-title" id="builder-tour-title">Sol — The Living Sovereign Star</h3>
+                <p class="tour-desc" id="builder-tour-desc">Witnessing the dynamic convective corona, solar prominences, and eternal energy preserving the planetary orbits.</p>
+                <div class="tour-progress-bar-wrap">
+                  <div class="tour-progress-fill" id="builder-tour-progress-fill"></div>
+                </div>
+              </div>
+              <div class="tour-hud-actions">
+                <button class="tour-nav-btn" id="builder-tour-prev-btn">◀ Previous</button>
+                <button class="tour-nav-btn" id="builder-tour-next-btn">Next ▶</button>
+                <button class="tour-exit-btn" id="builder-tour-exit-btn">✕ Exit Tour</button>
+              </div>
+            </div>
+
+            <!-- Viewport Overlay: What-If Active Floating HUD -->
+            <div id="builder-whatif-hud" class="builder-floating-mode-hud builder-whatif-hud" style="display: none;">
+              <span class="status-pulse-dot" style="background:#fbbf24; box-shadow: 0 0 8px #fbbf24;"></span>
+              <div class="mode-hud-text">
+                <span class="mode-hud-tag">WHAT-IF EXPERIMENT RUNNING</span>
+                <span class="mode-hud-info" id="builder-whatif-hud-info">Mass 1.0× // Stable Keplerian Balance</span>
+              </div>
+              <button class="mode-hud-action-btn" id="builder-whatif-hud-reset-btn" title="Reset Experiment">↺ Reset</button>
+              <button class="mode-hud-action-btn mode-hud-exit-btn" id="builder-whatif-hud-exit-btn" title="Exit What-If Mode">✕ Exit</button>
+            </div>
+
+            <!-- Viewport Overlay: Interior Mode Active Floating HUD -->
+            <div id="builder-interior-hud" class="builder-floating-mode-hud builder-interior-hud" style="display: none;">
+              <span class="status-pulse-dot" style="background:#38bdf8; box-shadow: 0 0 8px #38bdf8;"></span>
+              <div class="mode-hud-text">
+                <span class="mode-hud-tag">PLANETARY INTERIOR SCAN</span>
+                <span class="mode-hud-info" id="builder-interior-hud-info">Earth // Concentric Geophysics Cutaway</span>
+              </div>
+              <button class="mode-hud-action-btn mode-hud-exit-btn" id="builder-interior-hud-exit-btn" title="Exit Interior Mode">✕ Surface</button>
+            </div>
+
+            <!-- Viewport Helper Text -->
+            <div class="builder-viewport-hint">
+              <span>🖱️ Drag: Rotate Camera</span>
+              <span>•</span>
+              <span>Scroll: Zoom</span>
+              <span>•</span>
+              <span>Right-Click: Pan</span>
+              <span>•</span>
+              <span>Click Body: Inspect & Focus</span>
+            </div>
+          </main>
+
+          <!-- UNIFIED FLOATING GLASS CONTROL PANEL (MERGED BUILDER & INSPECTOR) -->
+          <aside class="cosmos-builder-panel cosmos-builder-unified-panel" id="builder-panel-right">
+            <div class="builder-panel-header unified-panel-header">
+              <div class="panel-header-title-group">
+                <span class="header-icon">🪐</span>
+                <h3 id="builder-inspector-header-title">PLANET INSPECTOR</h3>
+              </div>
+              <div class="panel-header-actions">
+                <span class="builder-panel-tag" id="builder-inspector-tag">UNIFIED HUD</span>
+                <button class="unified-panel-toggle" id="builder-panel-minimize-btn" title="Minimize / Expand Panel">◱</button>
+              </div>
+            </div>
+
+            <div class="builder-panel-scroll" id="builder-inspector-content">
+              
+              <!-- SECTION 1: SYSTEM BUILDER CONTROLS -->
+              <div class="unified-builder-card">
+                <div class="unified-section-label">
+                  <span>SYSTEM BUILDER</span>
+                  <span class="section-sub-tag">CREATION</span>
+                </div>
+
+                <!-- Primary Spawn Action -->
+                <div class="builder-action-group" style="margin-bottom: 8px;">
+                  <button class="builder-primary-btn" id="builder-add-planet-btn" title="Add New Planetary Body to the System">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-label">ADD NEW PLANET</span>
+                  </button>
+                </div>
+
+                <!-- Procedural Presets -->
+                <div class="builder-presets-compact">
+                  <button class="builder-sub-btn" id="builder-random-btn" title="Generate procedurally randomized planetary system">
+                    🎲 Random
+                  </button>
+                  <button class="builder-sub-btn" id="builder-default-btn" title="Restore default standard 8-planet system">
+                    ↺ Default
+                  </button>
+                  <button class="builder-sub-btn builder-danger-btn" id="builder-clear-btn" title="Clear all planets">
+                    🗑️ Clear
+                  </button>
+                </div>
+              </div>
+
+              <!-- Luminous Glass Divider -->
+              <div class="unified-glass-divider">
+                <span class="divider-line"></span>
+                <span class="divider-dot">✦</span>
+                <span class="divider-line"></span>
+              </div>
+
+              <!-- SECTION 2: CELESTIAL INSPECTOR -->
+              <!-- Planet Selector Header & Reticle Scan Preview -->
+              <div class="builder-inspector-target">
+                <div class="target-row">
+                  <div class="target-sphere-preview" id="builder-preview-sphere">
+                    <div class="scan-ring-pulse"></div>
+                  </div>
+                  <div class="target-meta">
+                    <span class="target-sub" id="builder-target-sub">TARGET BODY</span>
+                    <h2 id="builder-target-title">Earth</h2>
+                    <span class="target-type-badge" id="builder-target-badge">TERRESTRIAL OCEAN WORLD</span>
+                  </div>
+                </div>
+
+                <!-- Quick Planet Picker Dropdown -->
+                <div class="target-picker-wrap">
+                  <label for="builder-planet-picker">Select Celestial Body</label>
+                  <select id="builder-planet-picker"></select>
+                </div>
+
+              </div>
+
+              <!-- VIEW A: PLANET CONTEXTUAL INSPECTOR -->
+              <div id="inspector-planet-view" class="contextual-inspector-view">
+                <!-- Quick Focus & Delete Actions -->
+                <div class="builder-btn-row builder-mode-actions-row" style="margin-bottom: 10px;">
+                    <button class="builder-sub-btn builder-focus-btn" id="builder-focus-planet-btn" title="Focus camera smoothly on this planet">
+                      🎯 Focus
+                    </button>
+                    <button class="builder-sub-btn builder-whatif-btn" id="builder-whatif-btn" title="Launch What-If Physical Simulation Experiment">
+                      🧪 What-If
+                    </button>
+                    <button class="builder-sub-btn builder-interior-btn" id="builder-interior-btn" title="Investigate Internal Planetary Layers">
+                      🔬 Interior
+                    </button>
+                    <button class="builder-sub-btn builder-danger-btn" id="builder-delete-planet-btn" title="Remove this planet from the system">
+                      ❌ Delete
+                    </button>
+                  </div>
+
+                <!-- Structured 5-Category Category Tabs Selector -->
+                <div class="inspector-tabs-bar">
+                <button class="inspector-tab-btn active" data-tab="tab-basic">Basic</button>
+                <button class="inspector-tab-btn" data-tab="tab-physical">Physical</button>
+                <button class="inspector-tab-btn" data-tab="tab-orbital">Orbital</button>
+                <button class="inspector-tab-btn" data-tab="tab-atmo">Atmosphere</button>
+                <button class="inspector-tab-btn" data-tab="tab-moons">Moons</button>
+              </div>
+
+              <!-- CATEGORY 1: BASIC IDENTITY & DIMENSIONS -->
+              <div class="inspector-tab-content active" id="tab-basic">
+                <div class="builder-section">
+                  <h4 class="builder-section-title">IDENTITY & ARCHETYPE</h4>
+                  
+                  <div class="builder-input-group">
+                    <label for="builder-planet-name">Planet Designation</label>
+                    <input type="text" id="builder-planet-name" maxlength="20" placeholder="Planet Name">
+                  </div>
+
+                  <div class="builder-input-group">
+                    <label>Planetary Classification</label>
+                    <div class="builder-chip-group" id="builder-type-chips">
+                      <button class="type-chip active" data-type="rocky">Rocky</button>
+                      <button class="type-chip" data-type="ocean">Ocean</button>
+                      <button class="type-chip" data-type="desert">Desert</button>
+                      <button class="type-chip" data-type="gas">Gas Giant</button>
+                      <button class="type-chip" data-type="ice">Ice World</button>
+                      <button class="type-chip" data-type="lava">Lava</button>
+                    </div>
+                  </div>
+
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Visual Scale</span>
+                      <span id="builder-planet-size-val">5.6 units</span>
+                    </div>
+                    <input type="range" id="builder-planet-size" min="1.5" max="18" step="0.1" value="5.6">
+                    <div class="slider-scale">
+                      <span>Dwarf (1.5)</span>
+                      <span>Terrestrial (5.6)</span>
+                      <span>Gas Giant (18)</span>
+                    </div>
+                  </div>
+
+                  <div class="builder-input-group">
+                    <label for="builder-planet-color">Surface Hue</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                      <input type="color" id="builder-planet-color" value="#2271b3" style="width: 44px; height: 34px; padding: 2px; border-radius: 8px; border: 1px solid #00ffcc; cursor: pointer; background: transparent;">
+                      <div class="color-chips" id="builder-color-chips">
+                        <button class="color-chip" style="background: #2271b3;" data-color="#2271b3" title="Ocean Blue"></button>
+                        <button class="color-chip" style="background: #e27b58;" data-color="#e27b58" title="Mars Rust"></button>
+                        <button class="color-chip" style="background: #d39c7e;" data-color="#d39c7e" title="Jupiter Bands"></button>
+                        <button class="color-chip" style="background: #c5ab6e;" data-color="#c5ab6e" title="Saturn Gold"></button>
+                        <button class="color-chip" style="background: #4b70dd;" data-color="#4b70dd" title="Uranus Azure"></button>
+                        <button class="color-chip" style="background: #274687;" data-color="#274687" title="Neptune Deep"></button>
+                        <button class="color-chip" style="background: #00ffcc;" data-color="#00ffcc" title="Emerald Alien"></button>
+                        <button class="color-chip" style="background: #ff3366;" data-color="#ff3366" title="Crimson Core"></button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- CATEGORY 2: PHYSICAL METRICS & GRAVITY -->
+              <div class="inspector-tab-content" id="tab-physical">
+                <div class="builder-section">
+                  <h4 class="builder-section-title">PHYSICAL DYNAMICS</h4>
+                  
+                  <div class="inspector-metric-card">
+                    <div class="metric-row">
+                      <span class="metric-lbl">DIAMETER</span>
+                      <span class="metric-val" id="metric-diameter">12,742 km (1.00 ⊕)</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">PLANETARY MASS</span>
+                      <span class="metric-val" id="metric-mass">5.97 × 10²⁴ kg</span>
+                    </div>
+                  </div>
+
+                  <div class="inspector-metric-card" style="margin-top: 10px;">
+                    <div class="metric-row">
+                      <span class="metric-lbl">SURFACE GRAVITY</span>
+                      <span class="metric-val" id="metric-gravity">9.81 m/s² (1.00 g)</span>
+                    </div>
+                    <div class="metric-bar-wrap">
+                      <div class="metric-bar-fill" id="metric-gravity-bar" style="width: 40%; background: linear-gradient(90deg, #00ffcc, #38bdf8);"></div>
+                    </div>
+                  </div>
+
+                  <div class="inspector-metric-card" style="margin-top: 10px;">
+                    <div class="metric-row">
+                      <span class="metric-lbl">MEAN SURFACE TEMP</span>
+                      <span class="metric-val" id="metric-temp">+15°C (288 K)</span>
+                    </div>
+                    <div class="metric-bar-wrap">
+                      <div class="metric-bar-fill" id="metric-temp-bar" style="width: 50%; background: linear-gradient(90deg, #38bdf8, #dfb15b, #ff4466);"></div>
+                    </div>
+                    <div class="slider-scale" style="margin-top: 3px;">
+                      <span>-220°C Deep Ice</span>
+                      <span>+15°C Mild</span>
+                      <span>+465°C Scorching</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- CATEGORY 3: ORBITAL MECHANICS -->
+              <div class="inspector-tab-content" id="tab-orbital">
+                <div class="builder-section">
+                  <h4 class="builder-section-title">ORBITAL MECHANICS</h4>
+
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Orbital Distance</span>
+                      <span id="builder-orbit-dist-val">80 AU</span>
+                    </div>
+                    <input type="range" id="builder-orbit-dist" min="25" max="350" step="1" value="80">
+                    <div class="slider-scale">
+                      <span>Inner Orbit (25 AU)</span>
+                      <span>Deep Kuiper (350 AU)</span>
+                    </div>
+                  </div>
+
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Orbital Velocity</span>
+                      <span id="builder-orbit-speed-val">0.015 rad/s</span>
+                    </div>
+                    <input type="range" id="builder-orbit-speed" min="0.001" max="0.045" step="0.001" value="0.015">
+                    <div class="slider-scale">
+                      <span>Slow Drift</span>
+                      <span>Standard</span>
+                      <span>Rapid Orbit</span>
+                    </div>
+                  </div>
+
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Orbital Inclination</span>
+                      <span id="builder-orbit-tilt-val">0°</span>
+                    </div>
+                    <input type="range" id="builder-orbit-tilt" min="-25" max="25" step="1" value="0">
+                  </div>
+
+                  <div class="inspector-metric-card" style="margin-top: 10px;">
+                    <div class="metric-row">
+                      <span class="metric-lbl">ORBITAL PERIOD (YEAR)</span>
+                      <span class="metric-val" id="metric-period">365.25 Earth Days</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">ROTATION PERIOD (DAY)</span>
+                      <span class="metric-val" id="metric-daylength">24.0 Hours</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">AXIAL TILT</span>
+                      <span class="metric-val" id="metric-axialtilt">23.44°</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- CATEGORY 4: ATMOSPHERE & ENVELOPE -->
+              <div class="inspector-tab-content" id="tab-atmo">
+                <div class="builder-section">
+                  <h4 class="builder-section-title">ATMOSPHERE & RINGS</h4>
+
+                  <!-- Atmosphere Glow Feature -->
+                  <div class="builder-feature-toggle-card">
+                    <div class="toggle-card-header">
+                      <label class="builder-checkbox-label">
+                        <input type="checkbox" id="builder-planet-atmosphere" checked>
+                        <span>Atmospheric Glow Shell</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Planetary Rings Feature -->
+                  <div class="builder-feature-toggle-card" style="margin-top: 10px;">
+                    <div class="toggle-card-header">
+                      <label class="builder-checkbox-label">
+                        <input type="checkbox" id="builder-planet-rings">
+                        <span>Planetary Rings System</span>
+                      </label>
+                    </div>
+                    <div id="builder-rings-options" class="toggle-card-body" style="display: none;">
+                      <div class="builder-slider-group" style="margin-bottom: 0;">
+                        <div class="slider-header">
+                          <span>Ring Radius Multiplier</span>
+                          <span id="builder-ring-radius-val">2.2x</span>
+                        </div>
+                        <input type="range" id="builder-ring-radius" min="1.3" max="2.8" step="0.1" value="2.2">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="inspector-metric-card" style="margin-top: 10px;">
+                    <div class="metric-row">
+                      <span class="metric-lbl">SURFACE PRESSURE</span>
+                      <span class="metric-val" id="metric-pressure">1.013 bar (1.0 atm)</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">ATMOSPHERIC COMPOSITION</span>
+                    </div>
+                    <div class="atmo-composition-pills" id="metric-atmo-comp">
+                      <span class="atmo-pill">N₂ 78.1%</span>
+                      <span class="atmo-pill">O₂ 20.9%</span>
+                      <span class="atmo-pill">Ar 0.93%</span>
+                      <span class="atmo-pill">CO₂ 0.04%</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- CATEGORY 5: MOONS & EXPLORATION -->
+              <div class="inspector-tab-content" id="tab-moons">
+                <div class="builder-section">
+                  <h4 class="builder-section-title">NATURAL SATELLITES (MOONS)</h4>
+                  <div id="builder-moons-list" class="builder-moons-list">
+                    <!-- Populated dynamically: clickable moons that focus camera on the moon! -->
+                  </div>
+
+                  <h4 class="builder-section-title" style="margin-top: 16px;">HISTORIC EXPLORATION MISSIONS</h4>
+                  <div id="builder-missions-list" class="builder-missions-list">
+                    <!-- Populated dynamically with iconic missions (Apollo, Voyager, Cassini, etc.) -->
+                  </div>
+
+                  <h4 class="builder-section-title" style="margin-top: 16px;">COSMIC SIGNIFICANCE</h4>
+                  <p class="builder-cosmic-note" id="builder-cosmic-note">
+                    Preserved under Vishnu’s sustaining cosmic order, holding liquid water and conscious observers in the habitable zone.
+                  </p>
+                </div>
+              </div>
+              <!-- /VIEW A: PLANET CONTEXTUAL INSPECTOR -->
+              </div>
+
+              <!-- VIEW B: CENTRAL STAR CONTEXTUAL INSPECTOR -->
+              <div id="inspector-star-view" class="contextual-inspector-view" style="display: none;">
+                <div class="builder-btn-row builder-mode-actions-row" style="margin-bottom: 10px;">
+                    <button class="builder-sub-btn builder-focus-btn" id="builder-focus-star-btn" title="Focus camera smoothly on the Central Star">
+                      🎯 Focus Sol
+                    </button>
+                    <button class="builder-sub-btn builder-whatif-btn" id="builder-star-whatif-btn" title="Solar What-If Physical Simulation">
+                      🧪 What-If
+                    </button>
+                    <button class="builder-sub-btn builder-interior-btn" id="builder-star-interior-btn" title="Investigate Solar Interior Structure">
+                      🔬 Interior
+                    </button>
+                  </div>
+
+                <!-- Central Star Configuration -->
+                <div class="builder-section">
+                  <h4 class="builder-section-title">CENTRAL STAR PARAMETERS</h4>
+                  <div class="builder-input-group">
+                    <label for="builder-star-name">Star Designation</label>
+                    <input type="text" id="builder-star-name" value="Sol" maxlength="20" placeholder="Star Name">
+                  </div>
+                  
+                  <div class="builder-input-group">
+                    <label for="builder-star-type">Spectral Classification</label>
+                    <select id="builder-star-type">
+                      <option value="yellow">Yellow Dwarf (G-Type) - Balanced</option>
+                      <option value="blue">Blue Giant (O-Type) - Intense Hot</option>
+                      <option value="red">Red Supergiant (M-Type) - Huge Warm</option>
+                      <option value="white">White Dwarf (D-Type) - Compact Dense</option>
+                      <option value="orange">Orange Dwarf (K-Type) - Stable Mild</option>
+                    </select>
+                  </div>
+
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Visual Scale</span>
+                      <span id="builder-star-size-val">18 units</span>
+                    </div>
+                    <input type="range" id="builder-star-size" min="8" max="28" value="18">
+                    <div class="slider-scale">
+                      <span>Compact (8)</span>
+                      <span>Supergiant (28)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="builder-section">
+                  <h4 class="builder-section-title">STELLAR ASTROPHYSICS</h4>
+                  <div class="inspector-metric-card">
+                    <div class="metric-row">
+                      <span class="metric-lbl">CORE TEMP</span>
+                      <span class="metric-val" id="metric-star-core">15.7M K (Fusion)</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">PHOTOSPHERE</span>
+                      <span class="metric-val" id="metric-star-photosphere">5,778 K (G2V)</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">LUMINOSITY</span>
+                      <span class="metric-val" id="metric-star-lum">1.00 L☉ (Solar)</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">CORONAL FLUX</span>
+                      <span class="metric-val" id="metric-star-corona" style="color: #ffd700;">Dynamo Pulse</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VIEW C: NATURAL MOON CONTEXTUAL INSPECTOR -->
+              <div id="inspector-moon-view" class="contextual-inspector-view" style="display: none;">
+                <div class="builder-btn-row" style="margin-bottom: 10px;">
+                  <button class="builder-sub-btn builder-focus-btn" id="builder-focus-moon-btn" title="Focus camera smoothly on this natural satellite">
+                    🎯 Focus Moon
+                  </button>
+                  <button class="builder-sub-btn" id="builder-moon-back-planet-btn" title="Return to host planet inspector">
+                    🪐 View Host Planet
+                  </button>
+                </div>
+
+                <div class="builder-section">
+                  <h4 class="builder-section-title">SATELLITE MECHANICS</h4>
+                  <div class="inspector-metric-card">
+                    <div class="metric-row">
+                      <span class="metric-lbl">HOST PRIMARY</span>
+                      <span class="metric-val" id="moon-metric-parent">Earth</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">ORBITAL DISTANCE</span>
+                      <span class="metric-val" id="moon-metric-dist">384,400 km</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">ORBITAL PERIOD</span>
+                      <span class="metric-val" id="moon-metric-period">27.3 Earth Days</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">TIDAL COUPLING</span>
+                      <span class="metric-val" id="moon-metric-tidal" style="color: #38bdf8;">1:1 Synchronously Locked</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">CRUSTAL COMPOSITION</span>
+                      <span class="metric-val" id="moon-metric-comp">Anorthosite & Regolith</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VIEW D: SYSTEM OVERVIEW (MINIMAL EMPTY STATE) -->
+              <div id="inspector-empty-view" class="contextual-inspector-view" style="display: none;">
+                <div class="builder-section">
+                  <h4 class="builder-section-title">SOLAR SYSTEM OBSERVATORY</h4>
+                  <div class="inspector-metric-card">
+                    <div class="metric-row">
+                      <span class="metric-lbl">PRIMARY STAR</span>
+                      <span class="metric-val" id="overview-star-name">Sol</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">ORBITING WORLDS</span>
+                      <span class="metric-val" id="overview-planet-count">8 Planets</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">ORBITAL HARMONY</span>
+                      <span class="metric-val" style="color: #34d399;">Harmonic Equilibrium</span>
+                    </div>
+                  </div>
+                  <p class="builder-cosmic-note" style="margin-top: 10px;">
+                    Select any celestial body or the central star in the 3D observatory to inspect its scientific parameters and adjust orbital dynamics.
+                  </p>
+                </div>
+              </div>
+
+              <!-- VIEW E: WHAT-IF COSMIC EXPERIMENT LAB -->
+              <div id="inspector-whatif-view" class="contextual-inspector-view" style="display: none;">
+                <div class="builder-view-nav-bar">
+                  <button class="builder-sub-btn builder-nav-back-btn" id="builder-whatif-back-btn">
+                    ← Return to Surface View
+                  </button>
+                  <span class="builder-panel-tag whatif-tag">WHAT-IF LAB</span>
+                </div>
+
+                <!-- Prediction Interaction: "What do you think will happen?" -->
+                <div class="unified-builder-card whatif-card" style="margin-bottom: 10px;">
+                  <div class="unified-section-label">
+                    <span>1. HYPOTHESIS PREDICTION</span>
+                    <span class="section-sub-tag">PRE-SIMULATION</span>
+                  </div>
+                  <p class="whatif-prompt-text">What do you think will happen when you alter this world’s physical variables?</p>
+                  
+                  <div class="whatif-prediction-grid" id="whatif-prediction-grid">
+                    <button class="whatif-pred-btn active" data-pred="stable">
+                      <span class="pred-icon">🟢</span>
+                      <span class="pred-meta">
+                        <span class="pred-title">Stable New Orbit</span>
+                        <span class="pred-desc">Balance preserved</span>
+                      </span>
+                    </button>
+                    <button class="whatif-pred-btn" data-pred="spiral">
+                      <span class="pred-icon">🔥</span>
+                      <span class="pred-meta">
+                        <span class="pred-title">Spirals into Sun</span>
+                        <span class="pred-desc">Decays into solar corona</span>
+                      </span>
+                    </button>
+                    <button class="whatif-pred-btn" data-pred="escape">
+                      <span class="pred-icon">❄️</span>
+                      <span class="pred-meta">
+                        <span class="pred-title">Escapes System</span>
+                        <span class="pred-desc">Exceeds escape velocity</span>
+                      </span>
+                    </button>
+                    <button class="whatif-pred-btn" data-pred="destabilize">
+                      <span class="pred-icon">💫</span>
+                      <span class="pred-meta">
+                        <span class="pred-title">Orbits Destabilize</span>
+                        <span class="pred-desc">Gravitational disruption</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Physical Variables Manipulation (Mass, Gravity, Distance, Velocity, Rotation) -->
+                <div class="unified-builder-card whatif-card" style="margin-bottom: 10px;">
+                  <div class="unified-section-label">
+                    <span>2. PHYSICAL VARIABLES</span>
+                    <span class="section-sub-tag">SIM PARAMETERS</span>
+                  </div>
+
+                  <!-- 1. Mass -->
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Planetary Mass</span>
+                      <span id="whatif-mass-val" class="whatif-val-highlight">1.00× (5.97 × 10²⁴ kg)</span>
+                    </div>
+                    <input type="range" id="whatif-mass-slider" min="0.1" max="5.0" step="0.05" value="1.0">
+                    <div class="slider-scale">
+                      <span>0.1× Dwarf</span>
+                      <span>1.0× Baseline</span>
+                      <span>5.0× Super-Massive</span>
+                    </div>
+                  </div>
+
+                  <!-- 2. Surface Gravity -->
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Surface Gravity</span>
+                      <span id="whatif-gravity-val" class="whatif-val-highlight">9.81 m/s² (1.00 g)</span>
+                    </div>
+                    <input type="range" id="whatif-gravity-slider" min="0.2" max="4.0" step="0.05" value="1.0">
+                    <div class="slider-scale">
+                      <span>0.2g Low</span>
+                      <span>1.0g Earth</span>
+                      <span>4.0g Crushing</span>
+                    </div>
+                  </div>
+
+                  <!-- 3. Orbital Distance -->
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Orbital Distance</span>
+                      <span id="whatif-dist-val" class="whatif-val-highlight">80.0 AU (1.00 AU equiv)</span>
+                    </div>
+                    <input type="range" id="whatif-dist-slider" min="0.3" max="2.5" step="0.05" value="1.0">
+                    <div class="slider-scale">
+                      <span>0.3× Inward</span>
+                      <span>1.0× Standard</span>
+                      <span>2.5× Kuiper</span>
+                    </div>
+                  </div>
+
+                  <!-- 4. Orbital Velocity -->
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Orbital Velocity</span>
+                      <span id="whatif-vel-val" class="whatif-val-highlight">29.8 km/s (1.00× v_circ)</span>
+                    </div>
+                    <input type="range" id="whatif-vel-slider" min="0.2" max="2.5" step="0.05" value="1.0">
+                    <div class="slider-scale">
+                      <span>0.2× Decay</span>
+                      <span>1.0× Circular</span>
+                      <span>≥1.41× Escape</span>
+                    </div>
+                  </div>
+
+                  <!-- 5. Axial Rotation Speed -->
+                  <div class="builder-slider-group">
+                    <div class="slider-header">
+                      <span>Axial Rotation Speed</span>
+                      <span id="whatif-rot-val" class="whatif-val-highlight">24.0h (1.00× Prograde)</span>
+                    </div>
+                    <input type="range" id="whatif-rot-slider" min="-3.0" max="5.0" step="0.1" value="1.0">
+                    <div class="slider-scale">
+                      <span>-3.0× Retrograde</span>
+                      <span>Tidal Lock (0)</span>
+                      <span>+5.0× Rapid</span>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="builder-btn-row" style="margin-top: 10px; gap: 8px;">
+                    <button class="builder-primary-btn" id="whatif-run-btn" style="flex: 2;">
+                      <span class="btn-icon">▶</span>
+                      <span class="btn-label">RUN EXPERIMENT</span>
+                    </button>
+                    <button class="builder-sub-btn builder-danger-btn" id="whatif-reset-btn" style="flex: 1;" title="Restore original Solar System state">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Outcome Card: Prediction vs Result -->
+                <div class="whatif-outcome-card" id="whatif-outcome-card" style="display: none;">
+                  <div class="outcome-header">
+                    <span class="outcome-tag" id="whatif-outcome-status">SIMULATION OUTCOME</span>
+                    <span class="outcome-eval" id="whatif-outcome-eval">PREDICTION ACCURATE</span>
+                  </div>
+                  <div class="outcome-comparison-row">
+                    <div class="comparison-item">
+                      <span class="comp-lbl">YOUR PREDICTION</span>
+                      <span class="comp-val" id="whatif-res-pred">Stable New Orbit</span>
+                    </div>
+                    <span class="comp-arrow">➔</span>
+                    <div class="comparison-item">
+                      <span class="comp-lbl">SIMULATION RESULT</span>
+                      <span class="comp-val" id="whatif-res-actual">Stable Orbit Maintained</span>
+                    </div>
+                  </div>
+                  <p class="outcome-desc" id="whatif-outcome-desc">
+                    Orbital centripetal force balances gravitational attraction under adjusted Keplerian parameters.
+                  </p>
+                </div>
+              </div>
+
+              <!-- VIEW F: INSIDE THE PLANET INTERIOR EXPLORER -->
+              <div id="inspector-interior-view" class="contextual-inspector-view" style="display: none;">
+                <div class="builder-view-nav-bar">
+                  <button class="builder-sub-btn builder-nav-back-btn" id="builder-interior-back-btn">
+                    ← Return to Surface View
+                  </button>
+                  <span class="builder-panel-tag interior-tag">INTERIOR CORE</span>
+                </div>
+
+                <div class="interior-header-banner">
+                  <div class="interior-scan-badge">
+                    <span class="status-pulse-dot"></span>
+                    <span id="interior-target-name">Earth Interior Geophysics</span>
+                  </div>
+                  <span class="interior-type-caption" id="interior-type-caption">Concentric Geological Cutaway</span>
+                </div>
+
+                <!-- Interactive Layer Selector List -->
+                <div class="unified-builder-card" style="margin-bottom: 10px;">
+                  <div class="unified-section-label">
+                    <span>SELECT INTERNAL LAYER</span>
+                    <span class="section-sub-tag">CROSS-SECTION</span>
+                  </div>
+                  <div class="interior-layers-pill-list" id="interior-layers-pill-list">
+                    <!-- Populated dynamically: Atmosphere, Crust, Mantle, Outer Core, Inner Core, etc. -->
+                  </div>
+                </div>
+
+                <!-- Compact Scientific Readout Card for Selected Layer -->
+                <div class="unified-builder-card">
+                  <div class="unified-section-label">
+                    <span>LAYER SCIENTIFIC TELEMETRY</span>
+                    <span class="section-sub-tag">PHYSICAL DATA</span>
+                  </div>
+
+                  <div class="interior-layer-header-row">
+                    <span class="layer-icon" id="interior-layer-icon">🌋</span>
+                    <div class="layer-title-meta">
+                      <h4 id="interior-layer-title">Mantle</h4>
+                      <span id="interior-layer-state" class="layer-state-tag">Silicate Semi-Solid</span>
+                    </div>
+                  </div>
+
+                  <div class="inspector-metric-card interior-telemetry-metrics">
+                    <div class="metric-row">
+                      <span class="metric-lbl">TEMPERATURE</span>
+                      <span class="metric-val" id="interior-metric-temp">500°C – 4,000°C</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">PRESSURE</span>
+                      <span class="metric-val" id="interior-metric-pressure">1 – 136 GPa</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">COMPOSITION</span>
+                      <span class="metric-val" id="interior-metric-comp">Peridotite, Bridgmanite, Silicates</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">DENSITY</span>
+                      <span class="metric-val" id="interior-metric-density">3.4 – 5.6 g/cm³</span>
+                    </div>
+                    <div class="metric-row">
+                      <span class="metric-lbl">DEPTH / RADIUS</span>
+                      <span class="metric-val" id="interior-metric-depth">35 – 2,890 km Depth</span>
+                    </div>
+                  </div>
+
+                  <p class="interior-layer-role" id="interior-layer-role">
+                    Convective thermal currents drive plate tectonics and mantle plumes.
+                  </p>
+
+                  <div style="margin-top: 12px;">
+                    <button class="builder-sub-btn" id="builder-interior-surface-btn" style="width: 100%;">
+                      🌍 Exit Interior & Return to Surface
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- LOWER SECONDARY SECTION: COSMIC HARMONY & SYSTEM ARCHIVE -->
+        <section class="builder-secondary-scientific-bar" id="builder-secondary-scientific">
+          <div class="secondary-scientific-col harmony-col">
+            <div class="secondary-header">
+              <span class="secondary-icon">☸</span>
+              <h4>COSMIC HARMONY & CELESTIAL RESONANCE</h4>
+            </div>
+            <div class="secondary-content-row">
+              <div class="harmony-badge">
+                <span class="stat-label">EPOCH HARMONY</span>
+                <span class="stat-val stat-gold" id="builder-stat-epoch">॥ ऋत ॥ RTA STABLE</span>
+              </div>
+              <div class="harmony-badge">
+                <span class="stat-label">KEPLERIAN BALANCE</span>
+                <span class="stat-val" id="builder-harmony-kepler">99.8% STABLE</span>
+              </div>
+              <div class="harmony-badge">
+                <span class="stat-label">TIME MULTIPLIER</span>
+                <span class="stat-val" id="builder-stat-speed">1.0× (ACTIVE)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="secondary-scientific-col archive-col">
+            <div class="secondary-header">
+              <span class="secondary-icon">💾</span>
+              <h4>SYSTEM ARCHIVE & PRESETS</h4>
+            </div>
+            <div class="secondary-archive-row">
+              <div class="archive-input-wrap">
+                <label for="builder-system-save-name">System Name</label>
+                <input type="text" id="builder-system-save-name" value="COSMOS-SYS-01" maxlength="24">
+              </div>
+              <div class="archive-btns-wrap">
+                <button class="builder-sub-btn builder-save-btn" id="builder-save-btn">💾 Save System</button>
+                <button class="builder-sub-btn" id="builder-load-btn">📂 Load Saved</button>
+              </div>
+            </div>
+            <div id="builder-saved-list" class="builder-saved-dropdown-wrap" style="display: none; margin-top: 8px;">
+              <select id="builder-saved-select" style="width: 100%;">
+                <option value="">-- Choose Saved System --</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- BOTTOM TELEMETRY BAR: SYSTEM STATUS HUD -->
+        <footer class="cosmos-builder-stats-bar">
+          <div class="stat-pill">
+            <span class="stat-label">TOTAL BODIES</span>
+            <span class="stat-val" id="builder-stat-planets">8 Planets + 12 Moons</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-label">ACTIVE ORBITS</span>
+            <span class="stat-val" id="builder-stat-orbits">20 Trajectories</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-label">SYSTEM SPAN</span>
+            <span class="stat-val" id="builder-stat-span">330 AU</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-label">HABITABLE ZONE</span>
+            <span class="stat-val stat-hab" id="builder-stat-habzone">65 - 105 AU</span>
+          </div>
+        </footer>
+
+        <!-- INTERACTIVE PLANET COMPARE MODAL / DRAWER -->
+        <div id="builder-compare-modal" class="builder-compare-modal" style="display: none;">
+          <div class="compare-modal-backdrop"></div>
+          <div class="compare-modal-dialog">
+            <div class="compare-modal-header">
+              <div class="compare-header-title">
+                <span class="compare-icon">⚖️</span>
+                <h3>PLANETARY COMPARISON LABORATORY</h3>
+              </div>
+              <button class="compare-close-btn" id="builder-compare-close-btn">&times;</button>
+            </div>
+            <div class="compare-selectors-row">
+              <div class="compare-select-col">
+                <label for="compare-select-a">Primary Planet (A)</label>
+                <select id="compare-select-a" class="compare-select"></select>
+              </div>
+              <div class="compare-vs-badge">VS</div>
+              <div class="compare-select-col">
+                <label for="compare-select-b">Comparison Planet (B)</label>
+                <select id="compare-select-b" class="compare-select"></select>
+              </div>
+            </div>
+
+            <!-- Comparison Table & Spheres -->
+            <div class="compare-content-grid" id="compare-content-grid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIEW 7: COSMIC SIMULATION LAB (Advanced Astrophysics & Physics Accelerator) -->
+    <div id="view-sim-lab" class="cosmos-view" style="display: none;">
+      <div class="cosmos-simlab-container" id="cosmos-simlab-root">
+        
+        <!-- Lab Header / Top Navigation Bar -->
+        <header class="simlab-topbar">
+          <div class="simlab-topbar-left">
+            <button class="simlab-back-btn" data-view-target="view-explore" title="Return to Explore View">
+              ← Back to Explore
+            </button>
+            <div class="simlab-title-wrap">
+              <h1>COSMIC SIMULATION LAB</h1>
+              <span class="simlab-subtitle">ADVANCED ASTROPHYSICS &amp; NUMERICAL DYNAMICS ENGINE</span>
+            </div>
+          </div>
+
+          <div class="simlab-topbar-right">
+            <div class="simlab-status-badge">
+              <span class="status-pulse-dot"></span>
+              <span id="simlab-status-text">SIMULATION: ACTIVE</span>
+            </div>
+            <button class="builder-btn-action" id="simlab-branch-btn" title="Branch Current Simulation to Compare Scenarios">
+              🔀 Branch Sim
+            </button>
+            <button class="builder-btn-action" id="simlab-reset-scene-btn" title="Reset Simulation Parameters &amp; Camera">
+              ↺ Reset Scenario
+            </button>
+            <button class="builder-btn-action" id="simlab-fullscreen-btn" title="Toggle Fullscreen 3D Viewport">
+              ⛶ Fullscreen
+            </button>
+          </div>
+        </header>
+
+        <!-- 3-Column Laboratory Workspace -->
+        <div class="simlab-workspace" id="simlab-workspace">
+          
+          <!-- LEFT PANEL: EXPERIMENT & MODE SELECTION -->
+          <aside class="simlab-panel simlab-panel-left" id="simlab-panel-left">
+            <div class="simlab-panel-header">
+              <h3>SIMULATION MODES</h3>
+              <span class="builder-panel-tag">EXPERIMENTS</span>
+            </div>
+
+            <div class="simlab-panel-scroll">
+              <!-- Mode Selection Groups -->
+              <div class="simlab-mode-group">
+                <span class="simlab-group-title">ASTROPHYSICAL EVENTS</span>
+                
+                <button class="simlab-mode-card active" data-mode="event-asteroid">
+                  <div class="mode-card-icon">☄️</div>
+                  <div class="mode-card-info">
+                    <h4>Asteroid Impact</h4>
+                    <p>Atmospheric entry, cratering &amp; kinetic shockwave</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="event-collision">
+                  <div class="mode-card-icon">💥</div>
+                  <div class="mode-card-info">
+                    <h4>Planet Collision</h4>
+                    <p>Theia-style giant impact, deformation &amp; debris</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="event-supernova">
+                  <div class="mode-card-icon">✨</div>
+                  <div class="mode-card-info">
+                    <h4>Supernova Collapse</h4>
+                    <p>Core collapse, shockwave expansion &amp; remnant</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="event-solarflare">
+                  <div class="mode-card-icon">🔥</div>
+                  <div class="mode-card-info">
+                    <h4>Solar Flare &amp; CME</h4>
+                    <p>Magnetic reconnection &amp; coronal mass ejection</p>
+                  </div>
+                </button>
+              </div>
+
+              <div class="simlab-mode-group">
+                <span class="simlab-group-title">GRAVITATIONAL DYNAMICS</span>
+
+                <button class="simlab-mode-card" data-mode="nbody">
+                  <div class="mode-card-icon">🌐</div>
+                  <div class="mode-card-info">
+                    <h4>N-Body Gravity</h4>
+                    <p>Multi-body mutual gravitational integration</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="orbital">
+                  <div class="mode-card-icon">🔄</div>
+                  <div class="mode-card-info">
+                    <h4>Orbital Mechanics</h4>
+                    <p>Keplerian eccentricity, transfers &amp; escape paths</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="slingshot">
+                  <div class="mode-card-icon">🛸</div>
+                  <div class="mode-card-info">
+                    <h4>Gravity Assist</h4>
+                    <p>Hyperbolic flyby momentum boost &amp; slingshot</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="roche">
+                  <div class="mode-card-icon">🪐</div>
+                  <div class="mode-card-info">
+                    <h4>Tidal Force &amp; Roche</h4>
+                    <p>Tidal strain threshold &amp; ring fragmentation</p>
+                  </div>
+                </button>
+              </div>
+
+              <div class="simlab-mode-group">
+                <span class="simlab-group-title">RELATIVISTIC &amp; EXTREME</span>
+
+                <button class="simlab-mode-card" data-mode="blackhole">
+                  <div class="mode-card-icon">🕳️</div>
+                  <div class="mode-card-info">
+                    <h4>Black Hole &amp; Lensing</h4>
+                    <p>Event horizon, accretion disk &amp; photon curvature</p>
+                  </div>
+                </button>
+
+                <button class="simlab-mode-card" data-mode="relativity">
+                  <div class="mode-card-icon">⏱️</div>
+                  <div class="mode-card-info">
+                    <h4>Special Relativity</h4>
+                    <p>Lorentz factor γ &amp; synchronized twin clocks</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          <!-- CENTER VIEWPORT: DOMINANT 3D SIMULATION STAGE -->
+          <main class="simlab-viewport" id="simlab-viewport">
+            <!-- 3D WebGL Canvas Container -->
+            <div id="simlab-canvas" class="simlab-canvas"></div>
+
+            <!-- Viewport Floating Camera Tools (Top Left) -->
+            <div class="simlab-viewport-tools top-left">
+              <span class="tool-label">VIEW:</span>
+              <button class="cam-btn" id="simlab-cam-perspective" title="Free Perspective Orbit">Orbit</button>
+              <button class="cam-btn" id="simlab-cam-top" title="Top-Down Orbital View">Top</button>
+              <button class="cam-btn" id="simlab-cam-side" title="Side View">Side</button>
+              <button class="cam-btn" id="simlab-cam-reset" title="Reset Camera View">↺</button>
+            </div>
+
+            <!-- Viewport Floating Visualization Toggles (Top Right) -->
+            <div class="simlab-viewport-tools top-right">
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="simlab-toggle-trails" checked>
+                <span>Trails</span>
+              </label>
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="simlab-toggle-vectors" checked>
+                <span>Vectors (v⃗)</span>
+              </label>
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="simlab-toggle-grid" checked>
+                <span>Gravity Grid</span>
+              </label>
+              <label class="builder-toggle-pill">
+                <input type="checkbox" id="simlab-toggle-debris" checked>
+                <span>Debris</span>
+              </label>
+            </div>
+
+            <!-- In-Viewport Event Notification HUD -->
+            <div id="simlab-event-alert" class="simlab-event-alert" style="display: none;">
+              <span class="event-icon" id="simlab-event-icon">⚡</span>
+              <div class="event-content">
+                <span class="event-tag" id="simlab-event-tag">PHYSICS EVENT</span>
+                <span class="event-title" id="simlab-event-title">Kinetic Impact Threshold Reached</span>
+              </div>
+            </div>
+
+            <!-- Bottom Floating Timeline & Time Flow Dock -->
+            <div class="simlab-timeline-dock" id="simlab-timeline-dock">
+              <!-- Play / Pause / Step Controls -->
+              <div class="timeline-playback-group">
+                <button class="sim-play-btn" id="simlab-play-btn" title="Pause / Resume">
+                  <span id="simlab-play-icon">⏸️</span>
+                  <span id="simlab-play-text">PAUSE</span>
+                </button>
+                <button class="step-btn" id="simlab-step-back" title="Step Back">⏮</button>
+                <button class="step-btn" id="simlab-step-fwd" title="Step Forward">⏭</button>
+              </div>
+
+              <div class="sim-speed-divider"></div>
+
+              <!-- Speed Multiplier Buttons -->
+              <div class="timeline-speed-group">
+                <span class="speed-label">SPEED:</span>
+                <button class="speed-btn" data-speed="0.25">0.25×</button>
+                <button class="speed-btn active" data-speed="1.0">1×</button>
+                <button class="speed-btn" data-speed="10.0">10×</button>
+                <button class="speed-btn" data-speed="100.0">100×</button>
+                <button class="speed-btn" data-speed="1000.0">1000×</button>
+              </div>
+
+              <div class="sim-speed-divider"></div>
+
+              <!-- Timeline Scrubber -->
+              <div class="timeline-scrubber-group">
+                <span class="timeline-time-display" id="simlab-time-elapsed">t = 0.00 s</span>
+                <div class="timeline-slider-wrap">
+                  <input type="range" id="simlab-timeline-slider" min="0" max="100" value="0" step="0.5">
+                  <div class="timeline-stages">
+                    <span>Initial</span>
+                    <span>Approach</span>
+                    <span>Peak</span>
+                    <span>Aftermath</span>
+                    <span>Final</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          <!-- RIGHT PANEL: PARAMETERS, LIVE MATHEMATICS & ANALYSIS -->
+          <aside class="simlab-panel simlab-panel-right" id="simlab-panel-right">
+            <!-- Segmented Tabs Header -->
+            <div class="simlab-tabs-bar">
+              <button class="simlab-tab-btn active" data-tab="tab-params">⚙️ Parameters</button>
+              <button class="simlab-tab-btn" data-tab="tab-math">📐 Live Math</button>
+              <button class="simlab-tab-btn" data-tab="tab-telemetry">📊 Analysis</button>
+              <button class="simlab-tab-btn" data-tab="tab-branch">🔀 Branch</button>
+            </div>
+
+            <div class="simlab-panel-scroll">
+              
+              <!-- TAB 1: PARAMETER MANIPULATION (Dynamically populated based on mode) -->
+              <div id="tab-params" class="simlab-tab-pane active">
+                <div class="simlab-card" id="simlab-params-container">
+                  <!-- Injected via JavaScript based on active experiment -->
+                </div>
+              </div>
+
+              <!-- TAB 2: LIVE MATHEMATICS & EQUATIONS -->
+              <div id="tab-math" class="simlab-tab-pane">
+                <div class="simlab-card">
+                  <div class="card-header-tag">ACTIVE EQUATIONS &amp; DERIVATIONS</div>
+                  <div id="simlab-equations-container" class="simlab-equations-list">
+                    <!-- Real-time equations rendered here -->
+                  </div>
+                </div>
+
+                <!-- Synchronized Relativistic Clocks Widget (Visible in Relativity Mode) -->
+                <div class="simlab-card" id="simlab-twin-clocks-card" style="display: none;">
+                  <div class="card-header-tag">SYNCHRONIZED RELATIVISTIC CLOCKS</div>
+                  <div class="twin-clocks-grid">
+                    <div class="clock-display earth-clock">
+                      <span class="clock-label">EARTH FRAME (t)</span>
+                      <span class="clock-time" id="simlab-clock-earth">00:00:00.00</span>
+                      <span class="clock-desc">Stationary Observer</span>
+                    </div>
+                    <div class="clock-display ship-clock">
+                      <span class="clock-label">SPACECRAFT FRAME (t')</span>
+                      <span class="clock-time" id="simlab-clock-ship">00:00:00.00</span>
+                      <span class="clock-desc" id="simlab-clock-dilated">Dilated: γ = 1.000</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 3: LIVE ANALYSIS & TELEMETRY -->
+              <div id="tab-telemetry" class="simlab-tab-pane">
+                <div class="simlab-card">
+                  <div class="card-header-tag">SIMULATION STATUS</div>
+                  <div class="simlab-status-banner" id="simlab-stability-badge">
+                    <span class="status-indicator-dot"></span>
+                    <span id="simlab-stability-text">STABLE EQUILIBRIUM</span>
+                  </div>
+
+                  
+                  <!-- Real-Time Mode-Specific Live Physics Graph -->
+                  <div class="simlab-live-graph-box">
+                    <div class="graph-box-header">
+                      <span class="graph-box-title" id="simlab-graph-title">REAL-TIME PHYSICS TELEMETRY GRAPH</span>
+                      <span class="graph-live-tag"><span class="pulse-dot"></span> LIVE 60Hz</span>
+                    </div>
+                    <canvas id="simlab-live-graph" width="280" height="135" class="simlab-graph-canvas"></canvas>
+                    <div class="simlab-graph-legend" id="simlab-graph-legend">
+                      <span class="graph-legend-item"><span class="legend-color-dot" style="background:#38bdf8;"></span> <span id="legend-label-1">Metric A</span>: <strong id="legend-val-1">--</strong></span>
+                      <span class="graph-legend-item"><span class="legend-color-dot" style="background:#f43f5e;"></span> <span id="legend-label-2">Metric B</span>: <strong id="legend-val-2">--</strong></span>
+                    </div>
+                  </div>
+
+                  <div class="simlab-metric-grid" id="simlab-telemetry-metrics">
+                    <!-- Injected live values: Force, Energy, Velocity, Distance, Period, etc. -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 4: SIMULATION BRANCHING -->
+              <div id="tab-branch" class="simlab-tab-pane">
+                <div class="simlab-card">
+                  <div class="card-header-tag">BRANCH EXPERIMENT &amp; COMPARISON</div>
+                  <p class="simlab-card-desc">Duplicate current state into two branching universes with one altered parameter to compare outcomes.</p>
+                  
+                  <div class="branch-controls-wrap">
+                    <button class="builder-primary-btn" id="simlab-create-branch-btn">
+                      <span>🔀</span> Duplicate &amp; Create Branch B
+                    </button>
+                  </div>
+
+                  <div id="simlab-branch-comparison" class="branch-comparison-view" style="display: none;">
+                    <div class="branch-cards-row">
+                      <div class="branch-col branch-a-col">
+                        <h5>BRANCH A (Baseline)</h5>
+                        <div id="branch-a-metrics" class="branch-metrics-box"></div>
+                      </div>
+                      <div class="branch-col branch-b-col">
+                        <h5>BRANCH B (Altered)</h5>
+                        <div id="branch-b-metrics" class="branch-metrics-box"></div>
+                      </div>
+                    </div>
+                    <div class="branch-outcome-summary" id="branch-outcome-summary"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </aside>
+
+        </div>
+
+      </div>
+    </div>
+
+
+  </main>
+
+  <!-- Global Modal for Planet Cards -->
+  <div id="planetModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
